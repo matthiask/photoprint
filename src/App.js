@@ -271,7 +271,7 @@ function StepMode({ state, dispatch }) {
         <h1>Modus auswählen</h1>
         <div className="modes">
           <figure
-            className="modes__mode"
+            className="button modes__mode"
             onClick={() =>
               dispatch({
                 type: MERGE,
@@ -291,7 +291,7 @@ function StepMode({ state, dispatch }) {
             <figcaption>Ein Bild mehrmals drucken</figcaption>
           </figure>
           <figure
-            className="modes__mode"
+            className="button modes__mode"
             onClick={() =>
               dispatch({
                 type: MERGE,
@@ -581,7 +581,7 @@ function StepSettings({ state, dispatch }) {
             })
           }
         >
-          Auswahl anpassen
+          Zurück
         </button>
         <div style={{ position: "absolute", bottom: "40px", right: "10rem" }}>
           Gesamtpreis: CHF {price(state).toFixed(2)}
