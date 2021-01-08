@@ -51,10 +51,21 @@ img {
   text-align: center;
 }
 
+.step--settings {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.step--settings .selected-photo {
+  width: 400px;
+  height: 300px;
+}
+
 .step__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .photos {
@@ -70,6 +81,21 @@ img {
 .buttons {
   display: flex;
   justify-content: space-around;
+  gap: 1rem;
+}
+
+.buttons--group {
+  gap: 0;
+}
+
+.buttons--small {
+  font-size: 12px;
+}
+
+.buttons__caption {
+  display: grid;
+  place-items: center;
+  margin-right: 0.5rem;
 }
 
 .button {
@@ -79,6 +105,10 @@ img {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+}
+
+.buttons--small .button {
+  padding: 0.5em 1em;
 }
 
 .button--active {
