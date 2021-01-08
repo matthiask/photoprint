@@ -219,19 +219,21 @@ function StepHello({ state, dispatch }) {
             className="language en"
             onClick={() => alert("Du hast den Prototyp verlassen")}
           ></a>
-          <a
-            href="#"
-            className="language de"
-            onClick={() =>
-              dispatch({ type: MERGE, state: { step: STEP_UPLOAD } })
-            }
-          ></a>
+          <a href="#" className="language de is-current"></a>
           <a
             href="#"
             className="language fr"
             onClick={() => alert("Du hast den Prototyp verlassen")}
           ></a>
         </div>
+        <button
+          className="button button--continue"
+          onClick={() =>
+            dispatch({ type: MERGE, state: { step: STEP_UPLOAD } })
+          }
+        >
+          Weiter
+        </button>
       </div>
     </div>
   );
@@ -413,7 +415,7 @@ function PhotosMultiple({ state, dispatch }) {
           dispatch({ type: MERGE, state: { step: STEP_SETTINGS } })
         }
       >
-        Auswahl bestätigen
+        Weiter
       </button>
     </>
   );
@@ -545,11 +547,6 @@ function StepSettings({ state, dispatch }) {
                 </div>
               </td>
             </tr>
-            <tr>
-              <th>Gesamtpreis</th>
-              <td>CHF {price(state).toFixed(2)}</td>
-            </tr>
-
             {isSingle ? (
               <tr>
                 <th>Voransicht</th>
@@ -586,6 +583,9 @@ function StepSettings({ state, dispatch }) {
         >
           Auswahl anpassen
         </button>
+        <div style={{ position: "absolute", bottom: "40px", right: "10rem" }}>
+          Gesamtpreis: CHF {price(state).toFixed(2)}
+        </div>
         <button
           className="button button--continue"
           onClick={() =>
@@ -656,6 +656,10 @@ function StepPrint({ state, dispatch }) {
           </progress>
           {printed}/{amount} Bilder gedruckt.
         </center>
+        <ul>
+          <li>Bitte entnehmen Sie die gedruckten Photos</li>
+          <li>Vergessen Sie nicht, die Speicherkarte zu entfernen</li>
+        </ul>
       </div>
     </div>
   );

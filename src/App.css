@@ -91,6 +91,10 @@ img {
   height: 3rem;
 }
 
+.language.is-current {
+  box-shadow: 0 0 10px 5px rgba(0, 0, 100, 0.3);
+}
+
 .language.en {
   background-image: url("./en.png");
 }
@@ -149,7 +153,7 @@ img {
 .step--settings .photos {
   overflow-x: scroll;
   overflow-y: hidden;
-  grid-template-columns: repeat(var(--columns), 33.333%);
+  grid-template-columns: repeat(var(--columns), 25%);
 }
 
 .settings-table th,
