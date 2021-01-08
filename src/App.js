@@ -19,11 +19,25 @@ const photos = Array(40)
 
 export default function App() {
   const [step, setStep] = useState("upload");
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   const steps = [
     ["upload", "USB einstecken", <StepUpload />],
-    ["photos", "Photos auswählen", <StepPhotos />],
-    ["settings", "Druck konfigurieren", <StepSettings />],
+    [
+      "photos",
+      "Photos auswählen",
+      <StepPhotos
+        select={(id) => {
+          setSelectedPhoto(id);
+          setStep("settings");
+        }}
+      />,
+    ],
+    [
+      "settings",
+      "Druck konfigurieren",
+      <StepSettings selectedPhoto={selectedPhoto} />,
+    ],
     ["payment", "Bezahlung", null],
     ["printing", "Druck", null],
   ];
@@ -76,7 +90,7 @@ function StepUpload() {
   );
 }
 
-function StepPhotos() {
+function StepPhotos({ select }) {
   const [columns, setColumns] = useState(3);
   const selections = [1, 2, 3, 5];
 
@@ -98,7 +112,11 @@ function StepPhotos() {
       </div>
       <div className="photos" style={{ "--columns": columns }}>
         {photos.map((photo, idx) => (
-          <div key={idx} className="photos__photo">
+          <div
+            key={idx}
+            className="photos__photo"
+            onClick={() => select(photo)}
+          >
             <Photo id={photo} />
           </div>
         ))}
@@ -107,7 +125,7 @@ function StepPhotos() {
   );
 }
 
-function StepSettings() {
+function StepSettings({ selectedPhoto }) {
   const formats = ["A2", "A3", "A4", "A5", "A6"];
   const [format, setFormat] = useState("A4");
 
@@ -122,7 +140,7 @@ function StepSettings() {
         <h1>Druckeinstellungen</h1>
       </div>
       <div className="selected-photo">
-        <Photo id={42} />
+        <Photo id={selectedPhoto} />
       </div>
       <div className="settings-table">
         <label htmlFor="settings-format">Format</label>
