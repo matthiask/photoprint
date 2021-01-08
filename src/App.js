@@ -19,7 +19,7 @@ const MERGE = "MERGE";
 
 const checkStep = (state) => {
   if (!state.mode && state.step > STEP_MODE) {
-    state.mode = STEP_MODE;
+    state.step = STEP_MODE;
   }
   if (!state.selectedPhoto && state.step > STEP_PHOTOS) {
     state.step = STEP_PHOTOS;
