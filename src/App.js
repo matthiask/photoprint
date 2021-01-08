@@ -179,12 +179,13 @@ function Hardware({ children }) {
 function StepHello({ state, dispatch }) {
   return (
     <div className="step step--hello">
-      <div className="step__header">
-        <h1>Photo Print Pro</h1>
-        <span>v7.2</span>
-      </div>
       <div className="step__content">
-        <Photo id={98} className="photo photo--small" />
+        <h1>Photo Print Pro</h1>
+        <p>
+          Drucken Sie Ihre Lieblingsfotos in Profi- oder Standard-Qualität um
+          Erinnerungen zu bewahren von Grossformat bis Postkartengrösse aus.
+        </p>
+        <Photo id={98} />
         <p>Bitte wählen Sie Ihre Sprache</p>
         <div className="buttons languages">
           <a
@@ -213,10 +214,12 @@ function StepHello({ state, dispatch }) {
 function StepUpload({ dispatch }) {
   return (
     <div className="step step--upload">
-      <div className="step__header">
-        <h1>Bitte USB Stick einstecken</h1>
-      </div>
       <div className="step__content">
+        <h1>Bilder einlesen</h1>
+        <p>
+          Schliessen Sie Ihr Speichermedium an einem der dafür vorgesehenen
+          Steckplätze an, um die Bilder zu laden.
+        </p>
         <Hardware>
           <button
             className="button"
@@ -236,49 +239,51 @@ function StepMode({ state, dispatch }) {
   const single = <Photo id={99} />;
   return (
     <div className="step step--mode">
-      <h1>Modus auswählen</h1>
-      <div className="modes">
-        <figure
-          className="modes__mode"
-          onClick={() =>
-            dispatch({
-              type: MERGE,
-              state: {
-                mode: MODE_SINGLE,
-                selectedPhoto: null,
-                step: STEP_PHOTOS,
-              },
-            })
-          }
-        >
-          <div className="pile">
-            <Photo id={99} />
-            <Photo id={99} />
-            <Photo id={99} />
-          </div>
-          <figcaption>Ein Bild mehrmals drucken</figcaption>
-        </figure>
-        <figure
-          className="modes__mode"
-          onClick={() =>
-            dispatch({
-              type: MERGE,
-              state: {
-                mode: MODE_MULTIPLE,
-                selectedPhoto: [],
-                step: STEP_PHOTOS,
-              },
-            })
-          }
-        >
-          <div className="tiles">
-            <Photo id={99} />
-            <Photo id={98} />
-            <Photo id={95} />
-            <Photo id={96} />
-          </div>
-          <figcaption>Verschiedene Bilder je einmal drucken</figcaption>
-        </figure>
+      <div className="step__content">
+        <h1>Modus auswählen</h1>
+        <div className="modes">
+          <figure
+            className="modes__mode"
+            onClick={() =>
+              dispatch({
+                type: MERGE,
+                state: {
+                  mode: MODE_SINGLE,
+                  selectedPhoto: null,
+                  step: STEP_PHOTOS,
+                },
+              })
+            }
+          >
+            <div className="pile">
+              <Photo id={99} />
+              <Photo id={99} />
+              <Photo id={99} />
+            </div>
+            <figcaption>Ein Bild mehrmals drucken</figcaption>
+          </figure>
+          <figure
+            className="modes__mode"
+            onClick={() =>
+              dispatch({
+                type: MERGE,
+                state: {
+                  mode: MODE_MULTIPLE,
+                  selectedPhoto: [],
+                  step: STEP_PHOTOS,
+                },
+              })
+            }
+          >
+            <div className="tiles">
+              <Photo id={99} />
+              <Photo id={98} />
+              <Photo id={95} />
+              <Photo id={96} />
+            </div>
+            <figcaption>Verschiedene Bilder je einmal drucken</figcaption>
+          </figure>
+        </div>
       </div>
     </div>
   );
@@ -401,10 +406,8 @@ function StepSettings({ state, dispatch }) {
 
   return (
     <div className="step step--settings">
-      <div className="step__header">
-        <h1>Bitte wähle aus folgenden Optionen</h1>
-      </div>
       <div className="step__content">
+        <h1>Bitte wähle aus folgenden Optionen</h1>
         <div className="settings-table">
           <table>
             <tr>
@@ -571,28 +574,33 @@ function StepSettings({ state, dispatch }) {
 function StepPayment({ state, dispatch }) {
   return (
     <div className="step step--payment">
-      <div className="step__header">
+      <div className="step__content">
         <h1>Bezahlung</h1>
+        <p>
+          Format: {state.format}
+          <br />
+          Qualität: {state.quality}
+          <br />
+          Seitenanzahl:{" "}
+          {state.mode === MODE_SINGLE
+            ? state.amount
+            : state.selectedPhoto.length}
+        </p>
+        <p>
+          Zu bezahlen: CHF{" "}
+          {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
+        </p>
+        <Hardware>
+          <button
+            className="button"
+            onClick={() =>
+              dispatch({ type: MERGE, state: { step: STEP_PRINT } })
+            }
+          >
+            Betrag ist bezahlt
+          </button>
+        </Hardware>
       </div>
-      <p>
-        Format: {state.format}
-        <br />
-        Qualität: {state.quality}
-        <br />
-        Seitenanzahl:{" "}
-        {state.mode === MODE_SINGLE ? state.amount : state.selectedPhoto.length}
-      </p>
-      <p>
-        Zu bezahlen: CHF {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
-      </p>
-      <Hardware>
-        <button
-          className="button"
-          onClick={() => dispatch({ type: MERGE, state: { step: STEP_PRINT } })}
-        >
-          Betrag ist bezahlt
-        </button>
-      </Hardware>
     </div>
   );
 }
@@ -615,13 +623,13 @@ function StepPrint({ state, dispatch }) {
 
   return (
     <div className="step step--print">
-      <div className="step__header">
+      <div className="step__content">
         <h1>Druck</h1>
+        <progress max={amount} value={printed}>
+          {Math.floor((100 * printed) / amount)}%
+        </progress>
+        {printed}/{amount} Bilder gedruckt.
       </div>
-      <progress max={amount} value={printed}>
-        {Math.floor((100 * printed) / amount)}%
-      </progress>
-      {printed}/{amount} Bilder gedruckt.
     </div>
   );
 }
@@ -629,21 +637,21 @@ function StepPrint({ state, dispatch }) {
 function StepThanks({ state, dispatch }) {
   return (
     <div className="step step--thanks">
-      <div className="step__header">
+      <div className="step__content">
         <h1>Herzlichen Dank für Ihren Auftrag!</h1>
-      </div>
 
-      <button
-        className="button"
-        onClick={() =>
-          dispatch({
-            type: MERGE,
-            state: { step: STEP_MODE },
-          })
-        }
-      >
-        Neuen Auftrag starten
-      </button>
+        <button
+          className="button"
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { step: STEP_MODE },
+            })
+          }
+        >
+          Neuen Auftrag starten
+        </button>
+      </div>
     </div>
   );
 }
