@@ -1,3 +1,4 @@
+import ReactDOM from "react-dom";
 import { useEffect, useReducer, useState } from "react";
 
 import "./App.css";
@@ -201,15 +202,25 @@ function StepHello({ state, dispatch }) {
 
 function StepUpload({ dispatch }) {
   return (
-    <div
-      className="step step--upload"
-      onClick={() => dispatch({ type: MERGE, state: { step: STEP_MODE } })}
-    >
+    <div className="step step--upload">
       <div className="step__header">
         <h1>Bitte USB Stick einstecken</h1>
       </div>
       <div className="step__content">
-        <button className="button">Ist eingesteckt (debug only)</button>
+        {ReactDOM.createPortal(
+          <div className="hardware">
+            <strong>Hardware</strong>
+            <button
+              className="button"
+              onClick={() =>
+                dispatch({ type: MERGE, state: { step: STEP_MODE } })
+              }
+            >
+              USB Stick ist eingesteckt
+            </button>
+          </div>,
+          document.body
+        )}
       </div>
     </div>
   );
@@ -512,7 +523,10 @@ function StepSettings({ state, dispatch }) {
           </table>
         </div>
         {isMultiple ? (
-          <div className="photos" style={{ "--columns": state.selectedPhoto.length }}>
+          <div
+            className="photos"
+            style={{ "--columns": state.selectedPhoto.length }}
+          >
             {state.selectedPhoto.map((photo) => (
               <div className="photos__photo">
                 <Photo key={photo} id={photo} />
@@ -559,22 +573,26 @@ function StepPayment({ state, dispatch }) {
         <br />
         Qualität: {state.quality}
         <br />
-        Seitenanzahl: {state.mode === MODE_SINGLE ? state.amount : state.selectedPhoto.length}
+        Seitenanzahl:{" "}
+        {state.mode === MODE_SINGLE ? state.amount : state.selectedPhoto.length}
       </p>
       <p>
         Zu bezahlen: CHF {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
       </p>
-      <button
-        className="button"
-        onClick={() =>
-          dispatch({
-            type: MERGE,
-            state: { step: STEP_PRINT },
-          })
-        }
-      >
-        Ich habe bezahlt (demo only)
-      </button>
+      {ReactDOM.createPortal(
+        <div className="hardware">
+          <strong>Hardware</strong>
+          <button
+            className="button"
+            onClick={() =>
+              dispatch({ type: MERGE, state: { step: STEP_PRINT } })
+            }
+          >
+            Betrag ist bezahlt
+          </button>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
