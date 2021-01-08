@@ -42,7 +42,7 @@ const prints = (state) => {
 };
 
 const PER_PAGE = { A2: 22, A3: 14, A4: 8, A5: 4, A6: 2 };
-const PRO_MULTIPLIER = 1.2;
+const PRO_MULTIPLIER = 1.5;
 const price = (state) =>
   PER_PAGE[state.format] *
   (state.proQuality ? PRO_MULTIPLIER : 1) *
@@ -418,7 +418,10 @@ function StepSettings({ state, dispatch }) {
     ["A3", "30 x 42 cm"],
     ["A2", "42 x 60 cm"],
   ];
-  const qualities = [[false, "Standard"], [true, "Profi"]];
+  const qualities = [
+    [false, "Standard"],
+    [true, "Profi"],
+  ];
 
   const isSingle = state.mode === MODE_SINGLE;
   const isMultiple = state.mode === MODE_MULTIPLE;
@@ -524,7 +527,7 @@ function StepSettings({ state, dispatch }) {
                         flag === state.proQuality ? "button--active" : ""
                       }`}
                       onClick={() =>
-                        dispatch({ type: MERGE, state: { proQuality: flag }})
+                        dispatch({ type: MERGE, state: { proQuality: flag } })
                       }
                     >
                       {title}
@@ -598,7 +601,7 @@ function StepPayment({ state, dispatch }) {
         <p>
           Format: {state.format}
           <br />
-          Qualität: {state.proQuality ? "Profi": "Standard"}
+          Qualität: {state.proQuality ? "Profi" : "Standard"}
           <br />
           Seitenanzahl: {prints(state)}
         </p>
