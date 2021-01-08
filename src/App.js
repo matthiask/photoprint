@@ -26,10 +26,27 @@ const initialState = {
   step: STEP_HELLO,
   selectedPhoto: null,
   amount: 1,
-  quality: "Standard",
+  proQuality: false,
   format: "A6",
   columns: 3,
 };
+
+const prints = (state) => {
+  if (state.mode === MODE_SINGLE) {
+    return state.amount;
+  } else if (state.mode === MODE_MULTIPLE) {
+    return state.selectedPhoto.length;
+  } else {
+    return -1;
+  }
+};
+
+const PER_PAGE = { A2: 22, A3: 14, A4: 8, A5: 4, A6: 2 };
+const PRO_MULTIPLIER = 1.2;
+const price = (state) =>
+  PER_PAGE[state.format] *
+  (state.proQuality ? PRO_MULTIPLIER : 1) *
+  prints(state);
 
 const checkStep = (reducer) => (state, action) => {
   state = reducer(state, action);
@@ -57,7 +74,7 @@ const _multipleSettings = {
   step: "40_settings",
   selectedPhoto: [100, 101, 102, 107],
   amount: 1,
-  quality: "Standard",
+  proQuality: false,
   format: "A6",
   columns: 3,
 };
@@ -66,7 +83,7 @@ const _singleSettings = {
   step: "40_settings",
   selectedPhoto: 100,
   amount: 5,
-  quality: "Standard",
+  proQuality: false,
   format: "A6",
   columns: 3,
 };
@@ -303,10 +320,12 @@ function StepPhotos({ state, dispatch }) {
     <div className="step step--photos">
       <div className="step__header">
         <h1>
-          {state.mode === MODE_SINGLE ? "Photo auswählen" : "Photos auswählen"}
+          {state.mode === MODE_SINGLE
+            ? "Wählen Sie das Bild aus, das Sie ausdrucken wollen"
+            : "Wählen Sie die Bilder aus, die Sie jeweils einmal ausdrucken wollen"}
         </h1>
         <div className="buttons buttons--group buttons--small">
-          <div className="buttons__caption">Zoom:</div>
+          <div className="buttons__caption">Pro&nbsp;Zeile:</div>
           {selections.map((columns) => (
             <button
               className={`button ${
@@ -399,7 +418,7 @@ function StepSettings({ state, dispatch }) {
     ["A3", "30 x 42 cm"],
     ["A2", "42 x 60 cm"],
   ];
-  const qualities = ["Standard", "Profi"];
+  const qualities = [[false, "Standard"], [true, "Profi"]];
 
   const isSingle = state.mode === MODE_SINGLE;
   const isMultiple = state.mode === MODE_MULTIPLE;
@@ -499,16 +518,16 @@ function StepSettings({ state, dispatch }) {
               <th>Qualität</th>
               <td>
                 <div className="buttons">
-                  {qualities.map((f) => (
+                  {qualities.map(([flag, title]) => (
                     <button
                       className={`button ${
-                        f === state.quality ? "button--active" : ""
+                        flag === state.proQuality ? "button--active" : ""
                       }`}
                       onClick={() =>
-                        dispatch({ type: MERGE, state: { quality: f } })
+                        dispatch({ type: MERGE, state: { proQuality: flag }})
                       }
                     >
-                      {f}
+                      {title}
                     </button>
                   ))}
                 </div>
@@ -516,7 +535,7 @@ function StepSettings({ state, dispatch }) {
             </tr>
             <tr>
               <th>Gesamtpreis</th>
-              <td>CHF 394.00</td>
+              <td>CHF {price(state).toFixed(2)}</td>
             </tr>
 
             {isSingle ? (
@@ -579,17 +598,11 @@ function StepPayment({ state, dispatch }) {
         <p>
           Format: {state.format}
           <br />
-          Qualität: {state.quality}
+          Qualität: {state.proQuality ? "Profi": "Standard"}
           <br />
-          Seitenanzahl:{" "}
-          {state.mode === MODE_SINGLE
-            ? state.amount
-            : state.selectedPhoto.length}
+          Seitenanzahl: {prints(state)}
         </p>
-        <p>
-          Zu bezahlen: CHF{" "}
-          {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
-        </p>
+        <p>Zu bezahlen: CHF {price(state).toFixed(2)}</p>
         <Hardware>
           <button
             className="button"
@@ -607,8 +620,8 @@ function StepPayment({ state, dispatch }) {
 
 function StepPrint({ state, dispatch }) {
   const [printed, setPrinted] = useState(0);
-  const amount =
-    state.mode === MODE_SINGLE ? state.amount : state.selectedPhoto.length;
+  const amount = prints(state);
+
   useEffect(() => {
     if (printed < amount) {
       setTimeout(() => {
