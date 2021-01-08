@@ -289,6 +289,16 @@ function StepPayment({ state, dispatch }) {
       <div className="step__header">
         <h1>Bezahlung</h1>
       </div>
+      <p>
+        Format: {state.format}
+        <br />
+        Qualität: {state.quality}
+        <br />
+        Seitenanzahl: {state.amount}
+      </p>
+      <p>
+        Zu bezahlen: CHF {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
+      </p>
       <button
         className="button"
         onClick={() =>
@@ -298,7 +308,7 @@ function StepPayment({ state, dispatch }) {
           })
         }
       >
-        Ich habe bezahlt
+        Ich habe bezahlt (demo only)
       </button>
     </div>
   );
