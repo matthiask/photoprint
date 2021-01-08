@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 import "./App.css";
 
@@ -41,7 +41,7 @@ export default function App() {
     ["upload", "USB einstecken", <StepUpload />],
     [
       "photos",
-      "Photos auswählen",
+      "Photo auswählen",
       <StepPhotos
         select={(id) => {
           dispatch({
@@ -59,8 +59,8 @@ export default function App() {
       "Druck konfigurieren",
       <StepSettings state={state} dispatch={dispatch} />,
     ],
-    ["payment", "Bezahlung", null],
-    ["printing", "Druck", null],
+    ["payment", "Bezahlung", <StepPayment state={state} dispatch={dispatch} />],
+    ["printing", "Druck", <StepPrint state={state} dispatch={dispatch} />],
   ];
 
   const s = steps.find((s) => (s[0] === state.step ? s[2] : null));
@@ -150,6 +150,14 @@ function StepSettings({ state, dispatch }) {
   const formats = ["A2", "A3", "A4", "A5", "A6"];
   const qualities = ["Normale Qualität", "Profiqualität"];
 
+  useEffect(() => {
+    if (!state.selectedPhoto)
+      dispatch({
+        type: MERGE,
+        state: { step: "photos" },
+      });
+  });
+
   return (
     <div className="step step--settings">
       <div className="step__header">
@@ -220,6 +228,46 @@ function StepSettings({ state, dispatch }) {
         >
           +10
         </button>
+      </div>
+    </div>
+  );
+}
+
+function StepPayment({ state, dispatch }) {
+  useEffect(() => {
+    if (!state.selectedPhoto)
+      dispatch({
+        type: MERGE,
+        state: { step: "photos" },
+      });
+  });
+
+  return (
+    <div className="step step--payment">
+      <div className="step__header">
+        <h1>Bezahlung</h1>
+      </div>
+    </div>
+  );
+}
+
+function StepPrint({ state, dispatch }) {
+  useEffect(() => {
+    if (!state.selectedPhoto)
+      dispatch({
+        type: MERGE,
+        state: { step: "photos" },
+      });
+  });
+
+  return (
+    <div className="step step--print">
+      <div className="step__header">
+        <h1>Druck</h1>
+        <progress max="100" value="70">
+          70%
+        </progress>
+        14/20 Bilder gedruckt.
       </div>
     </div>
   );
