@@ -166,6 +166,16 @@ function Photo({ id }) {
   );
 }
 
+function Hardware({ children }) {
+  return ReactDOM.createPortal(
+    <div className="hardware">
+      <strong>Hardware</strong>
+      {children}
+    </div>,
+    document.body
+  );
+}
+
 function StepHello({ state, dispatch }) {
   return (
     <div className="step step--hello">
@@ -207,20 +217,16 @@ function StepUpload({ dispatch }) {
         <h1>Bitte USB Stick einstecken</h1>
       </div>
       <div className="step__content">
-        {ReactDOM.createPortal(
-          <div className="hardware">
-            <strong>Hardware</strong>
-            <button
-              className="button"
-              onClick={() =>
-                dispatch({ type: MERGE, state: { step: STEP_MODE } })
-              }
-            >
-              USB Stick ist eingesteckt
-            </button>
-          </div>,
-          document.body
-        )}
+        <Hardware>
+          <button
+            className="button"
+            onClick={() =>
+              dispatch({ type: MERGE, state: { step: STEP_MODE } })
+            }
+          >
+            USB Stick ist eingesteckt
+          </button>
+        </Hardware>
       </div>
     </div>
   );
@@ -579,20 +585,14 @@ function StepPayment({ state, dispatch }) {
       <p>
         Zu bezahlen: CHF {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
       </p>
-      {ReactDOM.createPortal(
-        <div className="hardware">
-          <strong>Hardware</strong>
-          <button
-            className="button"
-            onClick={() =>
-              dispatch({ type: MERGE, state: { step: STEP_PRINT } })
-            }
-          >
-            Betrag ist bezahlt
-          </button>
-        </div>,
-        document.body
-      )}
+      <Hardware>
+        <button
+          className="button"
+          onClick={() => dispatch({ type: MERGE, state: { step: STEP_PRINT } })}
+        >
+          Betrag ist bezahlt
+        </button>
+      </Hardware>
     </div>
   );
 }
