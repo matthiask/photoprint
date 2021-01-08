@@ -2,8 +2,6 @@ import { useReducer, useState } from "react";
 
 import "./App.css";
 
-// const Photo = () => <img src={"https://picsum.photos/600/400"} alt="" />;
-let photoId = 1;
 const Photo = ({ id }) => (
   <div
     className="photo"
@@ -15,7 +13,7 @@ const Photo = ({ id }) => (
 
 const photos = Array(40)
   .fill()
-  .map((_, idx) => idx + 1);
+  .map((_, idx) => idx + 100);
 
 const MERGE = "MERGE";
 
@@ -118,7 +116,7 @@ function StepUpload({ dispatch }) {
       onClick={() => dispatch({ type: MERGE, state: { step: STEP_MODE } })}
     >
       <h1>Bitte USB Stick einstecken</h1>
-      <Photo id={1} />
+      <Photo id={98} />
       <div className="buttons">
         <a href="#" className="button">
           EN
