@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 
 import "./App.css";
 
@@ -17,9 +17,25 @@ const photos = Array(40)
   .fill()
   .map((_, idx) => idx + 1);
 
+const MERGE = "MERGE";
+
+const reducer = (state, action) => {
+  if (action.type === MERGE) {
+    return {
+      ...state,
+      ...action.state,
+    };
+  }
+};
+
 export default function App() {
-  const [step, setStep] = useState("upload");
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [state, dispatch] = useReducer(reducer, {
+    step: "upload",
+    selectedPhoto: null,
+    amount: 1,
+    quality: "Normale Qualität",
+    format: "A6",
+  });
 
   const steps = [
     ["upload", "USB einstecken", <StepUpload />],
@@ -28,21 +44,26 @@ export default function App() {
       "Photos auswählen",
       <StepPhotos
         select={(id) => {
-          setSelectedPhoto(id);
-          setStep("settings");
+          dispatch({
+            type: MERGE,
+            state: {
+              selectedPhoto: id,
+              step: "settings",
+            },
+          });
         }}
       />,
     ],
     [
       "settings",
       "Druck konfigurieren",
-      <StepSettings selectedPhoto={selectedPhoto} />,
+      <StepSettings state={state} dispatch={dispatch} />,
     ],
     ["payment", "Bezahlung", null],
     ["printing", "Druck", null],
   ];
 
-  const s = steps.find((s) => (s[0] === step ? s[2] : null));
+  const s = steps.find((s) => (s[0] === state.step ? s[2] : null));
   const component = s ? s[2] : "Unknown step";
 
   return (
@@ -53,9 +74,9 @@ export default function App() {
             key={key}
             href="#"
             className={`steps__step ${
-              key === step ? "steps__step--active" : ""
+              key === state.step ? "steps__step--active" : ""
             }`}
-            onClick={() => setStep(key)}
+            onClick={() => dispatch({ type: MERGE, state: { step: key } })}
           >
             {title}
           </a>
@@ -125,14 +146,9 @@ function StepPhotos({ select }) {
   );
 }
 
-function StepSettings({ selectedPhoto }) {
+function StepSettings({ state, dispatch }) {
   const formats = ["A2", "A3", "A4", "A5", "A6"];
-  const [format, setFormat] = useState("A4");
-
   const qualities = ["Normale Qualität", "Profiqualität"];
-  const [quality, setQuality] = useState("Normale Qualität");
-
-  const [amount, setAmount] = useState(1);
 
   return (
     <div className="step step--settings">
@@ -140,15 +156,15 @@ function StepSettings({ selectedPhoto }) {
         <h1>Druckeinstellungen</h1>
       </div>
       <div className="selected-photo">
-        <Photo id={selectedPhoto} />
+        <Photo id={state.selectedPhoto} />
       </div>
       <div className="settings-table">
         <label htmlFor="settings-format">Format</label>
         <div className="buttons buttons--small">
           {formats.map((f) => (
             <button
-              className={`button ${f === format ? "button--active" : ""}`}
-              onClick={() => setFormat(f)}
+              className={`button ${f === state.format ? "button--active" : ""}`}
+              onClick={() => dispatch({ type: MERGE, state: { format: f } })}
             >
               {f}
             </button>
@@ -159,8 +175,10 @@ function StepSettings({ selectedPhoto }) {
         <div className="buttons buttons--small">
           {qualities.map((f) => (
             <button
-              className={`button ${f === quality ? "button--active" : ""}`}
-              onClick={() => setFormat(f)}
+              className={`button ${
+                f === state.quality ? "button--active" : ""
+              }`}
+              onClick={() => dispatch({ type: MERGE, state: { quality: f } })}
             >
               {f}
             </button>
@@ -170,20 +188,35 @@ function StepSettings({ selectedPhoto }) {
         <label htmlFor="settings-amount">Menge</label>
         <button
           className="button"
-          onClick={() => setAmount(Math.max(1, amount - 1))}
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { amount: Math.max(1, state.amount - 1) },
+            })
+          }
         >
           -
         </button>
-        <input type="text" disabled value={amount} />
+        <input type="text" disabled value={state.amount} />
         <button
           className="button"
-          onClick={() => setAmount(Math.min(99, amount + 1))}
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { amount: Math.min(99, state.amount + 1) },
+            })
+          }
         >
           +
         </button>
         <button
           className="button"
-          onClick={() => setAmount(Math.min(99, amount + 10))}
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { amount: Math.min(99, state.amount + 10) },
+            })
+          }
         >
           +10
         </button>
