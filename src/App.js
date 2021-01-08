@@ -670,7 +670,10 @@ function StepThanks({ state, dispatch }) {
     <div className="step step--thanks">
       <div className="step__content">
         <h1>Herzlichen Dank für Ihren Auftrag!</h1>
-
+        <ul>
+          <li>Bitte entnehmen Sie die gedruckten Photos</li>
+          <li>Vergessen Sie nicht, die Speicherkarte zu entfernen</li>
+        </ul>
         <button
           className="button"
           onClick={() =>
