@@ -97,7 +97,7 @@ const _printingProgress = {
   columns: 3,
 };
 
-const _overwritten = _printingProgress;
+const _overwritten = null;
 
 export default function App() {
   const [state, dispatch] = useReducer(
