@@ -27,6 +27,7 @@
 
   --steps: 6;
   --primary: lightblue;
+  --primary-border: darkblue;
 }
 
 .App--has-nav {
@@ -43,8 +44,8 @@ img {
 }
 
 .steps__step {
-  border: 1px solid #333;
-  border-right-color: var(--primary);
+  border: 1px solid #ccc;
+  border-right-color: var(--primary-border);
   display: grid;
   place-items: center;
   text-decoration: none;
@@ -55,7 +56,7 @@ img {
 }
 
 .steps__step--active {
-  border-color: var(--primary);
+  border-color: var(--primary-border);
   border-right: 0;
   background: var(--primary);
 }
@@ -66,7 +67,7 @@ img {
 }
 
 .step {
-  border: 1px solid var(--primary);
+  border: 1px solid var(--primary-border);
   padding: 1rem;
   position: relative;
 }
@@ -269,4 +270,12 @@ img {
   border: 1px solid #333;
   border-radius: 8px;
   text-align: center;
+}
+
+progress {
+  width: 100%;
+  transition: 0.2s;
+  height: 2rem;
+  border: 1px solid #333;
+  border-radius: 8px;
 }

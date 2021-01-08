@@ -87,8 +87,17 @@ const _singleSettings = {
   format: "A6",
   columns: 3,
 };
+const _printingProgress = {
+  mode: "single",
+  step: "60_print",
+  selectedPhoto: 110,
+  amount: 100,
+  proQuality: true,
+  format: "A6",
+  columns: 3,
+};
 
-const _overwritten = null;
+const _overwritten = _printingProgress;
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -641,10 +650,12 @@ function StepPrint({ state, dispatch }) {
     <div className="step step--print">
       <div className="step__content">
         <h1>Druck</h1>
-        <progress max={amount} value={printed}>
-          {Math.floor((100 * printed) / amount)}%
-        </progress>
-        {printed}/{amount} Bilder gedruckt.
+        <center>
+          <progress max={amount} value={printed}>
+            {Math.floor((100 * printed) / amount)}%
+          </progress>
+          {printed}/{amount} Bilder gedruckt.
+        </center>
       </div>
     </div>
   );
