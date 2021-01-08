@@ -51,6 +51,11 @@ img {
   text-align: center;
 }
 
+.modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
 .step--settings {
   display: flex;
   flex-flow: row wrap;
