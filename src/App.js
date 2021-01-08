@@ -217,13 +217,13 @@ function StepHello({ state, dispatch }) {
           <a
             href="#"
             className="language en"
-            onClick={() => alert("Du hast den Prototyp verlassen")}
+            onClick={() => alert("Sie haben den Prototyp verlassen")}
           ></a>
           <a href="#" className="language de is-current"></a>
           <a
             href="#"
             className="language fr"
-            onClick={() => alert("Du hast den Prototyp verlassen")}
+            onClick={() => alert("Sie haben den Prototyp verlassen")}
           ></a>
         </div>
         <button
