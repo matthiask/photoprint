@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useReducer, useState } from "react";
 
 import "./App.css";
 
@@ -19,18 +19,36 @@ const photos = Array(40)
 
 const MERGE = "MERGE";
 
+const checkStep = (state) => {
+  if (!state.mode && state.step > STEP_MODE) {
+    state.mode = STEP_MODE;
+  }
+  if (!state.selectedPhoto && state.step > STEP_PHOTOS) {
+    state.step = STEP_PHOTOS;
+  }
+  return state;
+};
+
 const reducer = (state, action) => {
   if (action.type === MERGE) {
-    return {
+    return checkStep({
       ...state,
       ...action.state,
-    };
+    });
   }
 };
 
+const STEP_UPLOAD = "10_upload";
+const STEP_MODE = "20_mode";
+const STEP_PHOTOS = "30_photos";
+const STEP_SETTINGS = "40_settings";
+const STEP_PAYMENT = "50_payment";
+const STEP_PRINT = "60_print";
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {
-    step: "upload",
+    mode: "",
+    step: "10_upload",
     selectedPhoto: null,
     amount: 1,
     quality: "Normale Qualität",
@@ -38,10 +56,10 @@ export default function App() {
   });
 
   const steps = [
-    ["upload", "USB einstecken", <StepUpload dispatch={dispatch} />],
-    ["mode", "Modus", <StepMode state={state} dispatch={dispatch} />],
+    [STEP_UPLOAD, "USB einstecken", <StepUpload dispatch={dispatch} />],
+    [STEP_MODE, "Modus", <StepMode state={state} dispatch={dispatch} />],
     [
-      "photos",
+      STEP_PHOTOS,
       "Photo auswählen",
       <StepPhotos
         select={(id) => {
@@ -49,19 +67,23 @@ export default function App() {
             type: MERGE,
             state: {
               selectedPhoto: id,
-              step: "settings",
+              step: STEP_SETTINGS,
             },
           });
         }}
       />,
     ],
     [
-      "settings",
+      STEP_SETTINGS,
       "Druck konfigurieren",
       <StepSettings state={state} dispatch={dispatch} />,
     ],
-    ["payment", "Bezahlung", <StepPayment state={state} dispatch={dispatch} />],
-    ["print", "Druck", <StepPrint state={state} dispatch={dispatch} />],
+    [
+      STEP_PAYMENT,
+      "Bezahlung",
+      <StepPayment state={state} dispatch={dispatch} />,
+    ],
+    [STEP_PRINT, "Druck", <StepPrint state={state} dispatch={dispatch} />],
   ];
 
   const s = steps.find((s) => (s[0] === state.step ? s[2] : null));
@@ -93,7 +115,7 @@ function StepUpload({ dispatch }) {
   return (
     <div
       className="step step--upload"
-      onClick={() => dispatch({ type: MERGE, state: { step: "mode" } })}
+      onClick={() => dispatch({ type: MERGE, state: { step: STEP_MODE } })}
     >
       <h1>Bitte USB Stick einstecken</h1>
       <Photo id={1} />
@@ -123,7 +145,12 @@ function StepMode({ state, dispatch }) {
       <div className="modes">
         <figure
           className="modes__mode"
-          onClick={() => dispatch({ type: MERGE, state: { step: "photos" } })}
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { mode: "single", step: STEP_PHOTOS },
+            })
+          }
         >
           <Photo id={99} />
           <figcaption>Ein Bild mehrmals drucken</figcaption>
@@ -178,14 +205,6 @@ function StepPhotos({ select }) {
 function StepSettings({ state, dispatch }) {
   const formats = ["A2", "A3", "A4", "A5", "A6"];
   const qualities = ["Normale Qualität", "Profiqualität"];
-
-  useEffect(() => {
-    if (!state.selectedPhoto)
-      dispatch({
-        type: MERGE,
-        state: { step: "photos" },
-      });
-  });
 
   return (
     <div className="step step--settings">
@@ -264,7 +283,7 @@ function StepSettings({ state, dispatch }) {
           onClick={() =>
             dispatch({
               type: MERGE,
-              state: { step: "payment" },
+              state: { step: STEP_PAYMENT },
             })
           }
         >
@@ -276,14 +295,6 @@ function StepSettings({ state, dispatch }) {
 }
 
 function StepPayment({ state, dispatch }) {
-  useEffect(() => {
-    if (!state.selectedPhoto)
-      dispatch({
-        type: MERGE,
-        state: { step: "photos" },
-      });
-  });
-
   return (
     <div className="step step--payment">
       <div className="step__header">
@@ -304,7 +315,7 @@ function StepPayment({ state, dispatch }) {
         onClick={() =>
           dispatch({
             type: MERGE,
-            state: { step: "print" },
+            state: { step: STEP_PRINT },
           })
         }
       >
@@ -315,14 +326,6 @@ function StepPayment({ state, dispatch }) {
 }
 
 function StepPrint({ state, dispatch }) {
-  useEffect(() => {
-    if (!state.selectedPhoto)
-      dispatch({
-        type: MERGE,
-        state: { step: "photos" },
-      });
-  });
-
   return (
     <div className="step step--print">
       <div className="step__header">
