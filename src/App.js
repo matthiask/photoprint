@@ -41,10 +41,10 @@ const prints = (state) => {
   }
 };
 
-const PER_PAGE = { A2: 22, A3: 14, A4: 8, A5: 4, A6: 2 };
-const PRO_MULTIPLIER = 1.5;
+const PRICE_PER_PAGE = { A2: 22, A3: 14, A4: 8, A5: 4, A6: 2 };
+const PRO_PRICE_FACTOR = 1.5;
 const itemPrice = (state) =>
-  PER_PAGE[state.format] * (state.proQuality ? PRO_MULTIPLIER : 1);
+  PRICE_PER_PAGE[state.format] * (state.proQuality ? PRO_PRICE_FACTOR : 1);
 const price = (state) => itemPrice(state) * prints(state);
 
 const checkStep = (reducer) => (state, action) => {
