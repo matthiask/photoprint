@@ -13,6 +13,7 @@
   grid-template-columns: 1fr;
 
   --steps: 6;
+  --primary: lightblue;
 }
 
 .App--has-nav {
@@ -30,7 +31,7 @@ img {
 
 .steps__step {
   border: 1px solid #333;
-  border-right-color: orange;
+  border-right-color: var(--primary);
   display: grid;
   place-items: center;
   text-decoration: none;
@@ -41,9 +42,9 @@ img {
 }
 
 .steps__step--active {
-  border-color: orange;
+  border-color: var(--primary);
   border-right: 0;
-  background: orange;
+  background: var(--primary);
 }
 
 .steps__step--disabled {
@@ -52,7 +53,7 @@ img {
 }
 
 .step {
-  border: 1px solid orange;
+  border: 1px solid var(--primary);
   padding: 1rem;
 }
 
@@ -125,6 +126,12 @@ img {
   height: 200px;
 }
 
+.settings-table th,
+.settings-table td {
+  text-align: left;
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
 .step__header {
   display: flex;
   justify-content: space-between;
@@ -174,12 +181,13 @@ img {
 }
 
 .button {
-  padding: 1em 2em;
+  padding: 1.5em 2em;
   background: lightgrey;
   border: 1px solid #333;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  border-radius: 8px;
 
   transition: 0.2s;
 }
@@ -193,7 +201,7 @@ img {
 }
 
 .button--active {
-  background: orange;
+  background: var(--primary);
 }
 
 .button--continue {
@@ -206,4 +214,28 @@ img {
   height: 0;
   background-size: cover;
   padding-bottom: 66.666%;
+}
+
+.formats__format {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.formats__format .button {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.spinner > * {
+  margin-right: 1rem;
+}
+
+.spinner input {
+  width: 4rem;
+  padding: 1.5rem;
+  line-height: 1;
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 8px;
+  text-align: center;
 }

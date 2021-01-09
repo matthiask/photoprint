@@ -271,7 +271,7 @@ function StepPhotos({ state, dispatch }) {
   return (
     <div className="step step--photos">
       <div className="step__header">
-        <h1>Photo auswählen</h1>
+        <h1>{state.mode === MODE_SINGLE ? "Photo auswählen" : "Photos auswählen"}</h1>
         <div className="buttons buttons--group buttons--small">
           <div className="buttons__caption">Zoom:</div>
           {selections.map((columns) => (
@@ -360,11 +360,11 @@ function PhotosMultiple({ state, dispatch }) {
 
 function StepSettings({ state, dispatch }) {
   const formats = [
-    ["A6", "10,5 cm x 14,8 cm"],
-    ["A5", "14,8 cm x 21,0 cm"],
-    ["A4", "21,0 cm x 29,7 cm"],
-    ["A3", "29,7 cm x 42,0 cm"],
-    ["A2", "42,0 cm x 59,4 cm"],
+    ["A6", "11 x 15 cm"],
+    ["A5", "15 x 21 cm"],
+    ["A4", "21 x 30 cm"],
+    ["A3", "30 x 42 cm"],
+    ["A2", "42 x 60 cm"],
   ];
   const qualities = ["Standard", "Profi"];
 
@@ -377,17 +377,12 @@ function StepSettings({ state, dispatch }) {
         <h1>Bitte wähle aus folgenden Optionen</h1>
       </div>
       <div className="step__content">
-        {isSingle ? (
-          <div className="selected-photo">
-            <Photo id={state.selectedPhoto} />
-          </div>
-        ) : null}
         <div className="settings-table">
           <table>
             <tr>
-              <th>Format</th>
+              <th style={{ paddingTop: "2rem" }}>Format</th>
               <td>
-                <div className="buttons formats">
+                <div className="formats">
                   {formats.map(([format, size]) => (
                     <div className="formats__format">
                       <span>{size}</span>
@@ -404,6 +399,67 @@ function StepSettings({ state, dispatch }) {
                     </div>
                   ))}
                 </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Menge</th>
+              <td>
+                {isSingle ? (
+                  <div className="spinner">
+                    <button
+                      className="button"
+                      onClick={() =>
+                        dispatch({
+                          type: MERGE,
+                          state: { amount: Math.max(1, state.amount - 10) },
+                        })
+                      }
+                    >
+                      -10
+                    </button>
+                    <button
+                      className="button"
+                      onClick={() =>
+                        dispatch({
+                          type: MERGE,
+                          state: { amount: Math.max(1, state.amount - 1) },
+                        })
+                      }
+                    >
+                      -
+                    </button>
+                    <input type="text" disabled value={state.amount} />
+                    <button
+                      className="button"
+                      onClick={() =>
+                        dispatch({
+                          type: MERGE,
+                          state: { amount: Math.min(99, state.amount + 1) },
+                        })
+                      }
+                    >
+                      +
+                    </button>
+                    <button
+                      className="button"
+                      onClick={() =>
+                        dispatch({
+                          type: MERGE,
+                          state: { amount: Math.min(99, state.amount + 10) },
+                        })
+                      }
+                    >
+                      +10
+                    </button>
+                  </div>
+                ) : null}
+                {isMultiple ? (
+                  <input
+                    type="text"
+                    disabled
+                    value={state.selectedPhoto.length}
+                  />
+                ) : null}
               </td>
             </tr>
             <tr>
@@ -425,55 +481,18 @@ function StepSettings({ state, dispatch }) {
                 </div>
               </td>
             </tr>
+            <tr>
+              <th>Gesamtpreis</th>
+              <td>CHF 394.00</td>
+            </tr>
+
             {isSingle ? (
               <tr>
-                <th>Menge</th>
+                <th>Voransicht</th>
                 <td>
-                  <button
-                    className="button"
-                    onClick={() =>
-                      dispatch({
-                        type: MERGE,
-                        state: { amount: Math.max(1, state.amount - 10) },
-                      })
-                    }
-                  >
-                    -10
-                  </button>
-                  <button
-                    className="button"
-                    onClick={() =>
-                      dispatch({
-                        type: MERGE,
-                        state: { amount: Math.max(1, state.amount - 1) },
-                      })
-                    }
-                  >
-                    -
-                  </button>
-                  <input type="text" disabled value={state.amount} />
-                  <button
-                    className="button"
-                    onClick={() =>
-                      dispatch({
-                        type: MERGE,
-                        state: { amount: Math.min(99, state.amount + 1) },
-                      })
-                    }
-                  >
-                    +
-                  </button>
-                  <button
-                    className="button"
-                    onClick={() =>
-                      dispatch({
-                        type: MERGE,
-                        state: { amount: Math.min(99, state.amount + 10) },
-                      })
-                    }
-                  >
-                    +10
-                  </button>
+                  <div className="selected-photo">
+                    <Photo id={state.selectedPhoto} />
+                  </div>
                 </td>
               </tr>
             ) : null}
@@ -497,7 +516,7 @@ function StepSettings({ state, dispatch }) {
             })
           }
         >
-          Einstellungen bestätigen
+          Weiter
         </button>
       </div>
     </div>
