@@ -70,7 +70,7 @@ const _singleSettings = {
   columns: 3,
 };
 
-const _overwritten = _multipleSettings;
+const _overwritten = null;
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -175,7 +175,7 @@ function StepHello({ state, dispatch }) {
       <div className="step__content">
         <Photo id={98} className="photo photo--small" />
         <p>Bitte wählen Sie Ihre Sprache</p>
-        <div className="buttons">
+        <div className="buttons languages">
           <a
             href="#"
             className="language en"
