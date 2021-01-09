@@ -51,8 +51,15 @@ const reducer = (state, action) => {
   }
 };
 
+let _overwritten;
+// _overwritten = {"mode":"multiple","step":"40_settings","selectedPhoto":[100,101,102],"amount":1,"quality":"Normale Qualität","format":"A6","columns":3}
+// _overwritten = {"mode":"single","step":"40_settings","selectedPhoto":100,"amount":5,"quality":"Normale Qualität","format":"A6","columns":3}
+
 export default function App() {
-  const [state, dispatch] = useReducer(checkStep(reducer), initialState);
+  const [state, dispatch] = useReducer(
+    checkStep(reducer),
+    _overwritten || initialState
+  );
 
   const args = { state, dispatch };
   const steps = [
@@ -94,6 +101,8 @@ export default function App() {
   ];
 
   const step = steps.find((s) => (s[0] === state.step ? s[2] : null));
+
+  console.log(JSON.stringify(state));
 
   return (
     <div className={`App ${step[1] ? "App--has-nav" : ""}`}>
@@ -207,7 +216,11 @@ function StepMode({ state, dispatch }) {
           onClick={() =>
             dispatch({
               type: MERGE,
-              state: { mode: MODE_SINGLE, step: STEP_PHOTOS },
+              state: {
+                mode: MODE_SINGLE,
+                selectedPhoto: null,
+                step: STEP_PHOTOS,
+              },
             })
           }
         >
@@ -219,7 +232,11 @@ function StepMode({ state, dispatch }) {
           onClick={() =>
             dispatch({
               type: MERGE,
-              state: { mode: MODE_MULTIPLE, step: STEP_PHOTOS },
+              state: {
+                mode: MODE_MULTIPLE,
+                selectedPhoto: [],
+                step: STEP_PHOTOS,
+              },
             })
           }
         >
@@ -293,7 +310,6 @@ const toggle = (selected, id) =>
   selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id];
 
 function PhotosMultiple({ state, dispatch }) {
-  const selected = state.selectedPhoto || [];
   return (
     <>
       <div className="photos" style={{ "--columns": state.columns }}>
@@ -306,19 +322,22 @@ function PhotosMultiple({ state, dispatch }) {
               dispatch({
                 type: MERGE,
                 state: {
-                  selectedPhoto: toggle(selected, photo),
+                  selectedPhoto: toggle(state.selectedPhoto, photo),
                 },
               })
             }
           >
             <Photo id={photo} />
-            <input type="checkbox" checked={selected.includes(photo)} />
+            <input
+              type="checkbox"
+              checked={state.selectedPhoto.includes(photo)}
+            />
           </a>
         ))}
       </div>
       <button
         className="button"
-        disabled={!selected.length}
+        disabled={!state.selectedPhoto.length}
         onClick={() =>
           dispatch({ type: MERGE, state: { step: STEP_SETTINGS } })
         }
@@ -333,80 +352,100 @@ function StepSettings({ state, dispatch }) {
   const formats = ["A2", "A3", "A4", "A5", "A6"];
   const qualities = ["Normale Qualität", "Profiqualität"];
 
+  const isSingle = state.mode === MODE_SINGLE;
+  const isMultiple = state.mode === MODE_MULTIPLE;
+
   return (
     <div className="step step--settings">
       <div className="step__header">
         <h1>Druckeinstellungen</h1>
       </div>
-      <div className="selected-photo">
-        <Photo id={state.selectedPhoto} />
-      </div>
-      <div className="settings-table">
-        <label htmlFor="settings-format">Format</label>
-        <div className="buttons buttons--small">
-          {formats.map((format) => (
-            <button
-              className={`button ${
-                format === state.format ? "button--active" : ""
-              }`}
-              onClick={() => dispatch({ type: MERGE, state: { format } })}
-            >
-              {format}
-            </button>
-          ))}
+      <div className="step__content">
+        {isSingle ? (
+          <div className="selected-photo">
+            <Photo id={state.selectedPhoto} />
+          </div>
+        ) : null}
+        <div className="settings-table">
+          <label htmlFor="settings-format">Format</label>
+          <div className="buttons buttons--small">
+            {formats.map((format) => (
+              <button
+                className={`button ${
+                  format === state.format ? "button--active" : ""
+                }`}
+                onClick={() => dispatch({ type: MERGE, state: { format } })}
+              >
+                {format}
+              </button>
+            ))}
+          </div>
+
+          <label htmlFor="settings-quality">Quality</label>
+          <div className="buttons buttons--small">
+            {qualities.map((f) => (
+              <button
+                className={`button ${
+                  f === state.quality ? "button--active" : ""
+                }`}
+                onClick={() => dispatch({ type: MERGE, state: { quality: f } })}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
+          {isSingle ? (
+            <>
+              <label htmlFor="settings-amount">Menge</label>
+              <button
+                className="button"
+                onClick={() =>
+                  dispatch({
+                    type: MERGE,
+                    state: { amount: Math.max(1, state.amount - 1) },
+                  })
+                }
+              >
+                -
+              </button>
+              <input type="text" disabled value={state.amount} />
+              <button
+                className="button"
+                onClick={() =>
+                  dispatch({
+                    type: MERGE,
+                    state: { amount: Math.min(99, state.amount + 1) },
+                  })
+                }
+              >
+                +
+              </button>
+              <button
+                className="button"
+                onClick={() =>
+                  dispatch({
+                    type: MERGE,
+                    state: { amount: Math.min(99, state.amount + 10) },
+                  })
+                }
+              >
+                +10
+              </button>
+            </>
+          ) : null}
+
+          <hr />
         </div>
-
-        <label htmlFor="settings-quality">Quality</label>
-        <div className="buttons buttons--small">
-          {qualities.map((f) => (
-            <button
-              className={`button ${
-                f === state.quality ? "button--active" : ""
-              }`}
-              onClick={() => dispatch({ type: MERGE, state: { quality: f } })}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-
-        <label htmlFor="settings-amount">Menge</label>
-        <button
-          className="button"
-          onClick={() =>
-            dispatch({
-              type: MERGE,
-              state: { amount: Math.max(1, state.amount - 1) },
-            })
-          }
-        >
-          -
-        </button>
-        <input type="text" disabled value={state.amount} />
-        <button
-          className="button"
-          onClick={() =>
-            dispatch({
-              type: MERGE,
-              state: { amount: Math.min(99, state.amount + 1) },
-            })
-          }
-        >
-          +
-        </button>
-        <button
-          className="button"
-          onClick={() =>
-            dispatch({
-              type: MERGE,
-              state: { amount: Math.min(99, state.amount + 10) },
-            })
-          }
-        >
-          +10
-        </button>
-
-        <hr />
+        {isMultiple ? (
+          <div className="photos" style={{ "--columns": 3 }}>
+            {state.selectedPhoto.map((photo) => (
+              <div className="photos__photo">
+                <Photo key={photo} id={photo} />
+              </div>
+            ))}
+          </div>
+        ) : null}
         <button
           className="button"
           onClick={() =>

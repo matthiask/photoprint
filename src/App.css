@@ -71,11 +71,6 @@ img {
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 }
 
-.step--settings {
-  display: flex;
-  flex-flow: row wrap;
-}
-
 .step--settings .selected-photo {
   width: 300px;
   height: 200px;
