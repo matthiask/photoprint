@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 import "./App.css";
 
@@ -92,17 +92,15 @@ export default function App() {
       <i className="material-icons">print</i>,
       <StepPrint {...args} />,
     ],
-    [STEP_THANKS, "", null],
+    [STEP_THANKS, "", <StepThanks {...args} />],
   ];
 
-  const s = steps.find((s) => (s[0] === state.step ? s[2] : null));
-  const component = s ? s[2] : "Unknown step";
+  const step = steps.find((s) => (s[0] === state.step ? s[2] : null));
 
-  const hasNav = state.step !== STEP_HELLO && state.step !== STEP_THANKS;
   return (
-    <div className={`App ${hasNav ? "App--has-nav" : ""}`}>
-      {hasNav ? <Menu steps={steps} {...args} /> : null}
-      {component}
+    <div className={`App ${step[1] ? "App--has-nav" : ""}`}>
+      {step[1] ? <Menu steps={steps} {...args} /> : null}
+      {step[2] || "Unknown step"}
     </div>
   );
 }
@@ -185,7 +183,6 @@ function StepUpload({ dispatch }) {
       onClick={() => dispatch({ type: MERGE, state: { step: STEP_MODE } })}
     >
       <h1>Bitte USB Stick einstecken</h1>
-      <Photo id={98} />
     </div>
   );
 }
@@ -391,15 +388,50 @@ function StepPayment({ state, dispatch }) {
 }
 
 function StepPrint({ state, dispatch }) {
+  const [printed, setPrinted] = useState(0);
+  useEffect(() => {
+    if (printed < state.amount) {
+      setTimeout(() => {
+        setPrinted((printed) => printed + 1);
+      }, 1000);
+    } else {
+      setTimeout(() => {
+        dispatch({ type: MERGE, state: { step: STEP_THANKS } });
+      }, 2000);
+    }
+  });
+
   return (
     <div className="step step--print">
       <div className="step__header">
         <h1>Druck</h1>
       </div>
-      <progress max="100" value="70">
-        70%
+      <progress max={state.amount} value={printed}>
+        {Math.floor((100 * printed) / state.amount)}%
       </progress>
-      14/20 Bilder gedruckt.
+      {printed}/{state.amount} Bilder gedruckt.
+    </div>
+  );
+}
+
+function StepThanks({ state, dispatch }) {
+  return (
+    <div className="step step--thanks">
+      <div className="step__header">
+        <h1>Herzlichen Dank für Deinen Auftrag!</h1>
+      </div>
+
+      <button
+        className="button"
+        onClick={() =>
+          dispatch({
+            type: MERGE,
+            state: { step: STEP_MODE },
+          })
+        }
+      >
+        Neuen Auftrag starten
+      </button>
     </div>
   );
 }
