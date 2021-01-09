@@ -96,6 +96,15 @@ const _printingProgress = {
   format: "A6",
   columns: 3,
 };
+const _thanks = {
+  mode: "multiple",
+  step: "70_thanks",
+  selectedPhoto: [127, 128, 123, 129],
+  amount: 1,
+  proQuality: false,
+  format: "A6",
+  columns: 5,
+};
 
 const _overwritten = null;
 
@@ -335,18 +344,30 @@ function StepPhotos({ state, dispatch }) {
             ? "Wählen Sie das Bild aus, das Sie ausdrucken wollen"
             : "Wählen Sie die Bilder aus, die Sie jeweils einmal ausdrucken wollen"}
         </h1>
-        <div className="buttons buttons--group buttons--small">
-          <div className="buttons__caption">Pro&nbsp;Zeile:</div>
-          {selections.map((columns) => (
-            <button
-              className={`button ${
-                columns === state.columns ? "button--active" : ""
-              }`}
-              onClick={() => dispatch({ type: MERGE, state: { columns } })}
-            >
-              {columns}
-            </button>
-          ))}
+        <div className="buttons">
+          <div className="buttons__caption">Zoom:</div>
+          <button
+            className="button"
+            onClick={() =>
+              dispatch({
+                type: MERGE,
+                state: { columns: Math.max(1, state.columns - 1) },
+              })
+            }
+          >
+            +
+          </button>
+          <button
+            className="button"
+            onClick={() =>
+              dispatch({
+                type: MERGE,
+                state: { columns: Math.min(5, state.columns + 1) },
+              })
+            }
+          >
+            -
+          </button>
         </div>
       </div>
       {listComponent}
@@ -386,27 +407,37 @@ function PhotosMultiple({ state, dispatch }) {
   return (
     <>
       <div className="photos" style={{ "--columns": state.columns }}>
-        {photos.map((photo) => (
-          <a
-            href="#"
-            key={photo}
-            className="photos__photo"
-            onClick={() =>
-              dispatch({
-                type: MERGE,
-                state: {
-                  selectedPhoto: toggle(state.selectedPhoto, photo),
-                },
-              })
-            }
-          >
-            <Photo id={photo} />
-            <input
-              type="checkbox"
-              checked={state.selectedPhoto.includes(photo)}
-            />
-          </a>
-        ))}
+        {photos.map((photo) => {
+          const isSelected = state.selectedPhoto.includes(photo);
+          return (
+            <a
+              href="#"
+              key={photo}
+              className={`photos__photo ${isSelected ? "is-selected" : ""}`}
+              onClick={() =>
+                dispatch({
+                  type: MERGE,
+                  state: {
+                    selectedPhoto: toggle(state.selectedPhoto, photo),
+                  },
+                })
+              }
+            >
+              <Photo id={photo} />
+              <input type="checkbox" checked={isSelected} />
+            </a>
+          );
+        })}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "40px",
+          right: "10rem",
+          fontWeight: "bold",
+        }}
+      >
+        {state.selectedPhoto.length} Photos
       </div>
       <button
         className="button button--continue"
@@ -583,7 +614,14 @@ function StepSettings({ state, dispatch }) {
         >
           Zurück
         </button>
-        <div style={{ position: "absolute", bottom: "40px", right: "10rem" }}>
+        <div
+          style={{
+            position: "absolute",
+            bottom: "40px",
+            right: "10rem",
+            fontWeight: "bold",
+          }}
+        >
           Gesamtpreis: CHF {price(state).toFixed(2)}
         </div>
         <button
@@ -667,13 +705,18 @@ function StepPrint({ state, dispatch }) {
 
 function StepThanks({ state, dispatch }) {
   return (
-    <div className="step step--thanks">
+    <div className="step step--thanks step--warning">
       <div className="step__content">
-        <h1>Herzlichen Dank für Ihren Auftrag!</h1>
+        <h1>Vergessen Sie nicht, Ihren USB Stick zu entfernen!</h1>
         <ul>
           <li>Bitte entnehmen Sie die gedruckten Photos</li>
           <li>Vergessen Sie nicht, die Speicherkarte zu entfernen</li>
         </ul>
+
+        <h2>
+          Alternativ können Sie vom gleichen Speichermedium einen neuen Auftrag
+          starten
+        </h2>
         <button
           className="button"
           onClick={() =>
@@ -685,6 +728,20 @@ function StepThanks({ state, dispatch }) {
         >
           Neuen Auftrag starten
         </button>
+
+        <Hardware>
+          <button
+            className="button"
+            onClick={() =>
+              dispatch({
+                type: MERGE,
+                state: { step: STEP_HELLO },
+              })
+            }
+          >
+            USB Stick ist entfernt
+          </button>
+        </Hardware>
       </div>
     </div>
   );

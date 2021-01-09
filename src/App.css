@@ -176,11 +176,15 @@ img {
   gap: 1rem;
 
   overflow-y: scroll;
-  max-height: 600px;
+  max-height: 530px;
 }
 
 .photos__photo {
   position: relative;
+}
+
+.photos__photo.is-selected {
+  box-shadow: 0 0 10px 5px rgba(0, 0, 100, 0.3);
 }
 
 .photos__photo input {
@@ -196,18 +200,9 @@ img {
   gap: 1rem;
 }
 
-.buttons--group {
-  gap: 0;
-}
-
-.buttons--small {
-  font-size: 12px;
-}
-
 .buttons__caption {
   display: grid;
   place-items: center;
-  margin-right: 0.5rem;
 }
 
 .button {
@@ -282,4 +277,22 @@ progress {
   height: 2rem;
   border: 1px solid #333;
   border-radius: 8px;
+}
+
+@keyframes warning {
+  0% {
+    background: #fff;
+  }
+
+  50% {
+    background: rgb(255, 228, 179);
+  }
+
+  100% {
+    background: #fff;
+  }
+}
+
+.step--warning {
+  animation: warning 1.5s infinite;
 }
