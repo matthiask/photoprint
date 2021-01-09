@@ -36,75 +36,144 @@ const reducer = (state, action) => {
   }
 };
 
+const STEP_HELLO = "00_hello";
 const STEP_UPLOAD = "10_upload";
 const STEP_MODE = "20_mode";
 const STEP_PHOTOS = "30_photos";
 const STEP_SETTINGS = "40_settings";
 const STEP_PAYMENT = "50_payment";
 const STEP_PRINT = "60_print";
+const STEP_THANKS = "70_thanks";
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {
     mode: "",
-    step: "10_upload",
+    step: STEP_HELLO,
     selectedPhoto: null,
     amount: 1,
     quality: "Normale Qualität",
     format: "A6",
+    columns: 3,
   });
 
+  const args = { state, dispatch };
   const steps = [
-    [STEP_UPLOAD, "USB einstecken", <StepUpload dispatch={dispatch} />],
-    [STEP_MODE, "Modus", <StepMode state={state} dispatch={dispatch} />],
+    [STEP_HELLO, "", <StepHello {...args} />],
+    [
+      STEP_UPLOAD,
+      <i className="material-icons">cloud_upload</i>,
+      <StepUpload {...args} />,
+    ],
+    [
+      STEP_MODE,
+      <div>
+        <i className="material-icons">navigate_before</i>
+        <i className="material-icons">navigate_next</i>
+      </div>,
+      <StepMode {...args} />,
+    ],
     [
       STEP_PHOTOS,
-      "Photo auswählen",
-      <StepPhotos
-        select={(id) => {
-          dispatch({
-            type: MERGE,
-            state: {
-              selectedPhoto: id,
-              step: STEP_SETTINGS,
-            },
-          });
-        }}
-      />,
+      <i className="material-icons">camera_roll</i>,
+      <StepPhotos {...args} />,
     ],
     [
       STEP_SETTINGS,
-      "Druck konfigurieren",
-      <StepSettings state={state} dispatch={dispatch} />,
+      <i className="material-icons">settings</i>,
+      <StepSettings {...args} />,
     ],
     [
       STEP_PAYMENT,
-      "Bezahlung",
-      <StepPayment state={state} dispatch={dispatch} />,
+      <i className="material-icons">payment</i>,
+      <StepPayment {...args} />,
     ],
-    [STEP_PRINT, "Druck", <StepPrint state={state} dispatch={dispatch} />],
+    [
+      STEP_PRINT,
+      <i className="material-icons">print</i>,
+      <StepPrint {...args} />,
+    ],
+    [STEP_THANKS, "", null],
   ];
 
   const s = steps.find((s) => (s[0] === state.step ? s[2] : null));
   const component = s ? s[2] : "Unknown step";
 
+  const hasNav = state.step !== STEP_HELLO && state.step !== STEP_THANKS;
   return (
-    <div className="App">
-      <nav className="steps">
-        {steps.map(([key, title]) => (
+    <div className={`App ${hasNav ? "App--has-nav" : ""}`}>
+      {hasNav ? <Menu steps={steps} {...args} /> : null}
+      {component}
+    </div>
+  );
+}
+
+function Menu({ steps, state, dispatch }) {
+  return (
+    <nav className="steps">
+      {steps.map(([key, title]) =>
+        title ? (
           <a
             key={key}
             href="#"
             className={`steps__step ${
-              key === state.step ? "steps__step--active" : ""
+              key === state.step
+                ? "steps__step--active"
+                : key >= state.step
+                ? "steps__step--disabled"
+                : ""
             }`}
             onClick={() => dispatch({ type: MERGE, state: { step: key } })}
           >
             {title}
           </a>
-        ))}
-      </nav>
+        ) : null
+      )}
+    </nav>
+  );
+}
 
-      {component}
+function StepHello({ state, dispatch }) {
+  return (
+    <div className="step step--hello">
+      <div className="step__header">
+        <h1>Photo Print Pro</h1>
+        <span>v7.2</span>
+      </div>
+      <div className="step__content">
+        <Photo id={98} className="photo photo--small" />
+        <div className="buttons">
+          <a
+            href="#"
+            className="button"
+            onClick={() => alert("Du hast den Prototyp verlassen")}
+          >
+            EN
+          </a>
+          <a
+            href="#"
+            className="button"
+            onClick={() =>
+              dispatch({ type: MERGE, state: { step: STEP_UPLOAD } })
+            }
+          >
+            DE
+          </a>
+          <a
+            href="#"
+            className="button"
+            onClick={() => alert("Du hast den Prototyp verlassen")}
+          >
+            FR
+          </a>
+          <a
+            href="#"
+            className="button"
+            onClick={() => alert("Du hast den Prototyp verlassen")}
+          >
+            IT
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
@@ -117,20 +186,6 @@ function StepUpload({ dispatch }) {
     >
       <h1>Bitte USB Stick einstecken</h1>
       <Photo id={98} />
-      <div className="buttons">
-        <a href="#" className="button">
-          EN
-        </a>
-        <a href="#" className="button button--active">
-          DE
-        </a>
-        <a href="#" className="button">
-          FR
-        </a>
-        <a href="#" className="button">
-          IT
-        </a>
-      </div>
     </div>
   );
 }
@@ -165,8 +220,7 @@ function StepMode({ state, dispatch }) {
   );
 }
 
-function StepPhotos({ select }) {
-  const [columns, setColumns] = useState(3);
+function StepPhotos({ state, dispatch }) {
   const selections = [1, 2, 3, 5];
 
   return (
@@ -175,25 +229,36 @@ function StepPhotos({ select }) {
         <h1>Photo auswählen</h1>
         <div className="buttons buttons--group buttons--small">
           <div className="buttons__caption">Zoom:</div>
-          {selections.map((c) => (
+          {selections.map((columns) => (
             <button
-              className={`button ${c === columns ? "button--active" : ""}`}
-              onClick={() => setColumns(c)}
+              className={`button ${
+                columns === state.columns ? "button--active" : ""
+              }`}
+              onClick={() => dispatch({ type: MERGE, state: { columns } })}
             >
-              {c}
+              {columns}
             </button>
           ))}
         </div>
       </div>
-      <div className="photos" style={{ "--columns": columns }}>
-        {photos.map((photo, idx) => (
-          <div
-            key={idx}
+      <div className="photos" style={{ "--columns": state.columns }}>
+        {photos.map((photo) => (
+          <a
+            href="#"
+            key={photo}
             className="photos__photo"
-            onClick={() => select(photo)}
+            onClick={() =>
+              dispatch({
+                type: MERGE,
+                state: {
+                  step: STEP_SETTINGS,
+                  selectedPhoto: photo,
+                },
+              })
+            }
           >
             <Photo id={photo} />
-          </div>
+          </a>
         ))}
       </div>
     </div>
@@ -215,12 +280,14 @@ function StepSettings({ state, dispatch }) {
       <div className="settings-table">
         <label htmlFor="settings-format">Format</label>
         <div className="buttons buttons--small">
-          {formats.map((f) => (
+          {formats.map((format) => (
             <button
-              className={`button ${f === state.format ? "button--active" : ""}`}
-              onClick={() => dispatch({ type: MERGE, state: { format: f } })}
+              className={`button ${
+                format === state.format ? "button--active" : ""
+              }`}
+              onClick={() => dispatch({ type: MERGE, state: { format } })}
             >
-              {f}
+              {format}
             </button>
           ))}
         </div>
