@@ -131,6 +131,12 @@ img {
   height: 200px;
 }
 
+.step--settings .photos {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  grid-template-columns: repeat(var(--columns), 33.333%);
+}
+
 .settings-table th,
 .settings-table td {
   text-align: left;

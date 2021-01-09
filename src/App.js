@@ -54,7 +54,7 @@ const reducer = (state, action) => {
 const _multipleSettings = {
   mode: "multiple",
   step: "40_settings",
-  selectedPhoto: [100, 101, 102],
+  selectedPhoto: [100, 101, 102, 107],
   amount: 1,
   quality: "Standard",
   format: "A6",
@@ -512,7 +512,7 @@ function StepSettings({ state, dispatch }) {
           </table>
         </div>
         {isMultiple ? (
-          <div className="photos" style={{ "--columns": 3 }}>
+          <div className="photos" style={{ "--columns": state.selectedPhoto.length }}>
             {state.selectedPhoto.map((photo) => (
               <div className="photos__photo">
                 <Photo key={photo} id={photo} />
@@ -559,7 +559,7 @@ function StepPayment({ state, dispatch }) {
         <br />
         Qualität: {state.quality}
         <br />
-        Seitenanzahl: {state.amount}
+        Seitenanzahl: {state.mode === MODE_SINGLE ? state.amount : state.selectedPhoto.length}
       </p>
       <p>
         Zu bezahlen: CHF {(Math.floor(Math.random() * 100000) / 100).toFixed(2)}
