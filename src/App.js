@@ -45,6 +45,9 @@ const STEP_PAYMENT = "50_payment";
 const STEP_PRINT = "60_print";
 const STEP_THANKS = "70_thanks";
 
+const MODE_SINGLE = "single";
+const MODE_MULTIPLE = "multiple";
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {
     mode: "",
@@ -198,7 +201,7 @@ function StepMode({ state, dispatch }) {
           onClick={() =>
             dispatch({
               type: MERGE,
-              state: { mode: "single", step: STEP_PHOTOS },
+              state: { mode: MODE_SINGLE, step: STEP_PHOTOS },
             })
           }
         >
@@ -207,7 +210,12 @@ function StepMode({ state, dispatch }) {
         </figure>
         <figure
           className="modes__mode"
-          onClick={() => alert("Du hast den Prototyp verlassen")}
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { mode: MODE_MULTIPLE, step: STEP_PHOTOS },
+            })
+          }
         >
           <Photo id={99} />
           <figcaption>Verschiedene Bilder je einmal drucken</figcaption>
@@ -219,6 +227,13 @@ function StepMode({ state, dispatch }) {
 
 function StepPhotos({ state, dispatch }) {
   const selections = [1, 2, 3, 5];
+  let listComponent;
+
+  if (state.mode === MODE_SINGLE) {
+    listComponent = <PhotosSingle state={state} dispatch={dispatch} />;
+  } else if (state.mode === MODE_MULTIPLE) {
+    listComponent = <PhotosMultiple state={state} dispatch={dispatch} />;
+  }
 
   return (
     <div className="step step--photos">
@@ -238,6 +253,43 @@ function StepPhotos({ state, dispatch }) {
           ))}
         </div>
       </div>
+      {listComponent}
+    </div>
+  );
+}
+
+function PhotosSingle({ state, dispatch }) {
+  return (
+    <div className="photos" style={{ "--columns": state.columns }}>
+      {photos.map((photo) => (
+        <a
+          href="#"
+          key={photo}
+          className="photos__photo"
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: {
+                step: STEP_SETTINGS,
+                selectedPhoto: photo,
+              },
+            })
+          }
+        >
+          <Photo id={photo} />
+        </a>
+      ))}
+    </div>
+  );
+}
+
+const toggle = (selected, id) =>
+  selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id];
+
+function PhotosMultiple({ state, dispatch }) {
+  const selected = state.selectedPhoto || [];
+  return (
+    <>
       <div className="photos" style={{ "--columns": state.columns }}>
         {photos.map((photo) => (
           <a
@@ -248,17 +300,26 @@ function StepPhotos({ state, dispatch }) {
               dispatch({
                 type: MERGE,
                 state: {
-                  step: STEP_SETTINGS,
-                  selectedPhoto: photo,
+                  selectedPhoto: toggle(selected, photo),
                 },
               })
             }
           >
             <Photo id={photo} />
+            <input type="checkbox" checked={selected.includes(photo)} />
           </a>
         ))}
       </div>
-    </div>
+      <button
+        className="button"
+        disabled={!selected.length}
+        onClick={() =>
+          dispatch({ type: MERGE, state: { step: STEP_SETTINGS } })
+        }
+      >
+        Auswahl bestätigen
+      </button>
+    </>
   );
 }
 

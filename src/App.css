@@ -125,6 +125,12 @@ img {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.button[disabled] {
+  opacity: 0.5;
 }
 
 .buttons--small .button {
