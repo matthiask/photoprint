@@ -157,37 +157,25 @@ function StepHello({ state, dispatch }) {
       </div>
       <div className="step__content">
         <Photo id={98} className="photo photo--small" />
+        <p>Bitte wählen Sie Ihre Sprache</p>
         <div className="buttons">
           <a
             href="#"
-            className="button"
+            className="language en"
             onClick={() => alert("Du hast den Prototyp verlassen")}
-          >
-            EN
-          </a>
+          ></a>
           <a
             href="#"
-            className="button"
+            className="language de"
             onClick={() =>
               dispatch({ type: MERGE, state: { step: STEP_UPLOAD } })
             }
-          >
-            DE
-          </a>
+          ></a>
           <a
             href="#"
-            className="button"
+            className="language fr"
             onClick={() => alert("Du hast den Prototyp verlassen")}
-          >
-            FR
-          </a>
-          <a
-            href="#"
-            className="button"
-            onClick={() => alert("Du hast den Prototyp verlassen")}
-          >
-            IT
-          </a>
+          ></a>
         </div>
       </div>
     </div>
@@ -200,7 +188,12 @@ function StepUpload({ dispatch }) {
       className="step step--upload"
       onClick={() => dispatch({ type: MERGE, state: { step: STEP_MODE } })}
     >
-      <h1>Bitte USB Stick einstecken</h1>
+      <div className="step__header">
+        <h1>Bitte USB Stick einstecken</h1>
+      </div>
+      <div className="step__content">
+        <button className="button">Ist eingesteckt (debug only)</button>
+      </div>
     </div>
   );
 }
@@ -224,7 +217,11 @@ function StepMode({ state, dispatch }) {
             })
           }
         >
-          <Photo id={99} />
+          <div className="pile">
+            <Photo id={99} />
+            <Photo id={99} />
+            <Photo id={99} />
+          </div>
           <figcaption>Ein Bild mehrmals drucken</figcaption>
         </figure>
         <figure
@@ -240,7 +237,12 @@ function StepMode({ state, dispatch }) {
             })
           }
         >
-          <Photo id={99} />
+          <div className="tiles">
+            <Photo id={99} />
+            <Photo id={98} />
+            <Photo id={95} />
+            <Photo id={96} />
+          </div>
           <figcaption>Verschiedene Bilder je einmal drucken</figcaption>
         </figure>
       </div>
