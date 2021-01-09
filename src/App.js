@@ -43,10 +43,9 @@ const prints = (state) => {
 
 const PER_PAGE = { A2: 22, A3: 14, A4: 8, A5: 4, A6: 2 };
 const PRO_MULTIPLIER = 1.5;
-const price = (state) =>
-  PER_PAGE[state.format] *
-  (state.proQuality ? PRO_MULTIPLIER : 1) *
-  prints(state);
+const itemPrice = (state) =>
+  PER_PAGE[state.format] * (state.proQuality ? PRO_MULTIPLIER : 1);
+const price = (state) => itemPrice(state) * prints(state);
 
 const checkStep = (reducer) => (state, action) => {
   state = reducer(state, action);
@@ -221,6 +220,8 @@ function StepHello({ state, dispatch }) {
           Erinnerungen zu bewahren von Grossformat bis Postkartengrösse aus.
         </p>
         <Photo id={98} />
+        <br />
+        <br />
         <p>Bitte wählen Sie Ihre Sprache</p>
         <div className="buttons languages">
           <a
@@ -655,25 +656,43 @@ function StepPayment({ state, dispatch }) {
       <div className="step step--payment">
         <div className="step__content">
           {paid ? (
-            <center>
-              <i className="material-icons" style={{ fontSize: "6rem" }}>
+            <div class="panel">
+              <i className="material-icons" style={{ fontSize: "4rem" }}>
                 info
               </i>
-              <h2>
+              <h3>
                 Bitte entfernen Sie die Maestro-Karte um den Druck zu starten.
-              </h2>
-            </center>
+              </h3>
+            </div>
           ) : (
             <>
-              <h1>Bezahlung</h1>
-              <p>
-                Format: {state.format}
-                <br />
-                Qualität: {state.proQuality ? "Profi" : "Standard"}
-                <br />
-                Seitenanzahl: {prints(state)}
-              </p>
-              <p>Zu bezahlen: CHF {price(state).toFixed(2)}</p>
+              <h1>Zahlungsübersicht</h1>
+              <table>
+                <tr>
+                  <th>Format</th>
+                  <td>{state.format}</td>
+                </tr>
+                <tr>
+                  <th>Einzelpreis</th>
+                  <td>CHF {itemPrice(state).toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <th>Gesamtpreis</th>
+                  <td>
+                    {prints(state)} x CHF {itemPrice(state).toFixed(2)} = CHF{" "}
+                    {price(state).toFixed(2)}
+                  </td>
+                </tr>
+              </table>
+              <div class="panel">
+                <i className="material-icons" style={{ fontSize: "4rem" }}>
+                  info
+                </i>
+                <h3>
+                  Bitte beachten Sie die Informationen am Zahlungsterminal auf
+                  der rechten Seite.
+                </h3>
+              </div>
             </>
           )}
         </div>
@@ -739,14 +758,14 @@ function StepThanks({ state, dispatch }) {
       <div className="step__content">
         <h1>Ihre Fotos wurden gedruckt</h1>
 
-        <div className="warning">
-          <i className="material-icons" style={{ fontSize: "6rem" }}>
+        <div className="panel panel--warning">
+          <i className="material-icons" style={{ fontSize: "4rem" }}>
             info
           </i>
-          <p>
+          <h3>
             Bitte vergessen Sie nicht, Ihren USB Stick zu entfernen und Ihre
             Fotos zu entnehmen.
-          </p>
+          </h3>
         </div>
 
         <p>

@@ -78,7 +78,7 @@ img {
 
 .step--hello .step__content {
   text-align: center;
-  padding: 5rem 16rem;
+  padding: 0 16rem;
 }
 
 .buttons.languages {
@@ -156,8 +156,12 @@ img {
   grid-template-columns: repeat(var(--columns), 33%);
 }
 
-.settings-table th,
-.settings-table td {
+table {
+  width: 100%;
+}
+
+table th,
+table td {
   text-align: left;
   padding: 0.5rem 1rem 0.5rem 0;
 }
@@ -293,17 +297,17 @@ progress {
   }
 }
 
-.warning {
-  border: 1px solid rgb(255, 228, 179);
-  padding: 2rem;
-  margin-bottom: 1rem;
-  animation: warning 1.5s infinite;
-}
-
-table {
-  width: 100%;
-}
-
 p {
   margin: 0 0 1rem 0;
+}
+
+.panel {
+  border: 1px solid;
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+
+.panel--warning {
+  border-color: rgb(255, 228, 179);
+  animation: warning 1.5s infinite;
 }
