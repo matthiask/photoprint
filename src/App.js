@@ -2,39 +2,11 @@ import { useEffect, useReducer, useState } from "react";
 
 import "./App.css";
 
-const Photo = ({ id }) => (
-  <div
-    className="photo"
-    style={{
-      backgroundImage: `url(https://picsum.photos/id/${id}/600/400)`,
-    }}
-  />
-);
-
 const photos = Array(40)
   .fill()
   .map((_, idx) => idx + 100);
 
 const MERGE = "MERGE";
-
-const checkStep = (state) => {
-  if (!state.mode && state.step > STEP_MODE) {
-    state.step = STEP_MODE;
-  }
-  if (!state.selectedPhoto && state.step > STEP_PHOTOS) {
-    state.step = STEP_PHOTOS;
-  }
-  return state;
-};
-
-const reducer = (state, action) => {
-  if (action.type === MERGE) {
-    return checkStep({
-      ...state,
-      ...action.state,
-    });
-  }
-};
 
 const STEP_HELLO = "00_hello";
 const STEP_UPLOAD = "10_upload";
@@ -48,16 +20,39 @@ const STEP_THANKS = "70_thanks";
 const MODE_SINGLE = "single";
 const MODE_MULTIPLE = "multiple";
 
+const initialState = {
+  mode: "",
+  step: STEP_HELLO,
+  selectedPhoto: null,
+  amount: 1,
+  quality: "Normale Qualität",
+  format: "A6",
+  columns: 3,
+};
+
+const checkStep = (reducer) => (state, action) => {
+  state = reducer(state, action);
+
+  if (!state.mode && state.step > STEP_MODE) {
+    state.step = STEP_MODE;
+  }
+  if (!state.selectedPhoto && state.step > STEP_PHOTOS) {
+    state.step = STEP_PHOTOS;
+  }
+  return state;
+};
+
+const reducer = (state, action) => {
+  if (action.type === MERGE) {
+    return {
+      ...state,
+      ...action.state,
+    };
+  }
+};
+
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, {
-    mode: "",
-    step: STEP_HELLO,
-    selectedPhoto: null,
-    amount: 1,
-    quality: "Normale Qualität",
-    format: "A6",
-    columns: 3,
-  });
+  const [state, dispatch] = useReducer(checkStep(reducer), initialState);
 
   const args = { state, dispatch };
   const steps = [
@@ -130,6 +125,17 @@ function Menu({ steps, state, dispatch }) {
         ) : null
       )}
     </nav>
+  );
+}
+
+function Photo({ id }) {
+  return (
+    <div
+      className="photo"
+      style={{
+        backgroundImage: `url(https://picsum.photos/id/${id}/600/400)`,
+      }}
+    />
   );
 }
 
