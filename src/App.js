@@ -292,12 +292,12 @@ function StepMode({ state, dispatch }) {
               })
             }
           >
+            <h2>Ein Bild mehrmals drucken</h2>
             <div className="pile">
               <Photo id={99} />
               <Photo id={99} />
               <Photo id={99} />
             </div>
-            <figcaption>Ein Bild mehrmals drucken</figcaption>
           </figure>
           <figure
             className="button modes__mode"
@@ -312,13 +312,13 @@ function StepMode({ state, dispatch }) {
               })
             }
           >
+            <h2>Verschiedene Bilder je einmal drucken</h2>
             <div className="tiles">
               <Photo id={99} />
               <Photo id={98} />
               <Photo id={95} />
               <Photo id={96} />
             </div>
-            <figcaption>Verschiedene Bilder je einmal drucken</figcaption>
           </figure>
         </div>
       </div>
@@ -555,6 +555,7 @@ function StepSettings({ state, dispatch }) {
                       disabled
                       value={state.selectedPhoto.length}
                     />
+                    1 Abzug pro ausgewähltem Bild
                   </div>
                 ) : null}
               </td>
@@ -578,30 +579,35 @@ function StepSettings({ state, dispatch }) {
                 </div>
               </td>
             </tr>
-            {isSingle ? (
-              <tr>
-                <th>Voransicht</th>
-                <td>
+            <tr>
+              <th>Voransicht</th>
+              <td>
+                {isSingle ? (
                   <div className="selected-photo">
                     <Photo id={state.selectedPhoto} />
                   </div>
-                </td>
-              </tr>
-            ) : null}
+                ) : null}
+                {isMultiple ? (
+                  <>
+                    <p>
+                      Sie haben {state.selectedPhoto.length} Bilder ausgewählt.
+                    </p>
+                    <div
+                      className="photos"
+                      style={{ "--columns": state.selectedPhoto.length }}
+                    >
+                      {state.selectedPhoto.map((photo) => (
+                        <div className="photos__photo">
+                          <Photo key={photo} id={photo} />
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
+              </td>
+            </tr>
           </table>
         </div>
-        {isMultiple ? (
-          <div
-            className="photos"
-            style={{ "--columns": state.selectedPhoto.length }}
-          >
-            {state.selectedPhoto.map((photo) => (
-              <div className="photos__photo">
-                <Photo key={photo} id={photo} />
-              </div>
-            ))}
-          </div>
-        ) : null}
 
         <button
           className="button button--back"
