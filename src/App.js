@@ -450,8 +450,10 @@ function StepPayment({ state, dispatch }) {
 
 function StepPrint({ state, dispatch }) {
   const [printed, setPrinted] = useState(0);
+  const amount =
+    state.mode === MODE_SINGLE ? state.amount : state.selectedPhoto.length;
   useEffect(() => {
-    if (printed < state.amount) {
+    if (printed < amount) {
       setTimeout(() => {
         setPrinted((printed) => printed + 1);
       }, 1000);
@@ -467,10 +469,10 @@ function StepPrint({ state, dispatch }) {
       <div className="step__header">
         <h1>Druck</h1>
       </div>
-      <progress max={state.amount} value={printed}>
-        {Math.floor((100 * printed) / state.amount)}%
+      <progress max={amount} value={printed}>
+        {Math.floor((100 * printed) / amount)}%
       </progress>
-      {printed}/{state.amount} Bilder gedruckt.
+      {printed}/{amount} Bilder gedruckt.
     </div>
   );
 }
@@ -479,7 +481,7 @@ function StepThanks({ state, dispatch }) {
   return (
     <div className="step step--thanks">
       <div className="step__header">
-        <h1>Herzlichen Dank für Deinen Auftrag!</h1>
+        <h1>Herzlichen Dank für Ihren Auftrag!</h1>
       </div>
 
       <button
