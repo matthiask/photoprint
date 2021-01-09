@@ -98,6 +98,17 @@ img {
   max-height: 600px;
 }
 
+.photos__photo {
+  position: relative;
+}
+
+.photos__photo input {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  transform: scale(2);
+}
+
 .buttons {
   display: flex;
   justify-content: space-around;
