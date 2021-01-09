@@ -51,9 +51,16 @@ const reducer = (state, action) => {
   }
 };
 
-let _overwritten;
-// _overwritten = {"mode":"multiple","step":"40_settings","selectedPhoto":[100,101,102],"amount":1,"quality":"Standard","format":"A6","columns":3}
-_overwritten = {
+const _multipleSettings = {
+  mode: "multiple",
+  step: "40_settings",
+  selectedPhoto: [100, 101, 102],
+  amount: 1,
+  quality: "Standard",
+  format: "A6",
+  columns: 3,
+};
+const _singleSettings = {
   mode: "single",
   step: "40_settings",
   selectedPhoto: 100,
@@ -62,6 +69,8 @@ _overwritten = {
   format: "A6",
   columns: 3,
 };
+
+const _overwritten = _multipleSettings;
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -271,7 +280,9 @@ function StepPhotos({ state, dispatch }) {
   return (
     <div className="step step--photos">
       <div className="step__header">
-        <h1>{state.mode === MODE_SINGLE ? "Photo auswählen" : "Photos auswählen"}</h1>
+        <h1>
+          {state.mode === MODE_SINGLE ? "Photo auswählen" : "Photos auswählen"}
+        </h1>
         <div className="buttons buttons--group buttons--small">
           <div className="buttons__caption">Zoom:</div>
           {selections.map((columns) => (
@@ -454,11 +465,13 @@ function StepSettings({ state, dispatch }) {
                   </div>
                 ) : null}
                 {isMultiple ? (
-                  <input
-                    type="text"
-                    disabled
-                    value={state.selectedPhoto.length}
-                  />
+                  <div className="spinner">
+                    <input
+                      type="text"
+                      disabled
+                      value={state.selectedPhoto.length}
+                    />
+                  </div>
                 ) : null}
               </td>
             </tr>
@@ -507,6 +520,18 @@ function StepSettings({ state, dispatch }) {
             ))}
           </div>
         ) : null}
+
+        <button
+          className="button button--back"
+          onClick={() =>
+            dispatch({
+              type: MERGE,
+              state: { step: STEP_PHOTOS },
+            })
+          }
+        >
+          Auswahl anpassen
+        </button>
         <button
           className="button button--continue"
           onClick={() =>

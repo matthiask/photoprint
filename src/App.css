@@ -55,6 +55,7 @@ img {
 .step {
   border: 1px solid var(--primary);
   padding: 1rem;
+  position: relative;
 }
 
 .App--has-nav .step {
@@ -204,10 +205,16 @@ img {
   background: var(--primary);
 }
 
+.button--back {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
 .button--continue {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 1rem;
+  right: 1rem;
 }
 
 .photo {
