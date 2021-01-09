@@ -261,12 +261,28 @@ table td {
   margin-top: 0.5rem;
 }
 
+.formats__format:nth-child(1) .button {
+  font-size: 80%;
+}
+.formats__format:nth-child(2) .button {
+  font-size: 90%;
+}
+.formats__format:nth-child(3) .button {
+  font-size: 100%;
+}
+.formats__format:nth-child(4) .button {
+  font-size: 110%;
+}
+.formats__format:nth-child(5) .button {
+  font-size: 120%;
+}
+
 .spinner > * {
   margin-right: 1rem;
 }
 
 .spinner input {
-  width: 4rem;
+  width: 3rem;
   padding: 1.5rem;
   line-height: 1;
   background: transparent;

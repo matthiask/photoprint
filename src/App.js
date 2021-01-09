@@ -627,10 +627,11 @@ function StepSettings({ state, dispatch }) {
             position: "absolute",
             bottom: "40px",
             right: "10rem",
-            fontWeight: "bold",
+            textAlign: "right",
           }}
         >
-          Gesamtpreis: CHF {price(state).toFixed(2)}
+          Gesamtpreis: {prints(state)} x CHF {itemPrice(state).toFixed(2)} ={" "}
+          <strong>CHF {price(state).toFixed(2)}</strong>
         </div>
         <button
           className="button button--continue"
@@ -777,7 +778,7 @@ function StepThanks({ state, dispatch }) {
           onClick={() =>
             dispatch({
               type: MERGE,
-              state: { step: STEP_MODE },
+              state: { ...initialState, step: STEP_MODE },
             })
           }
         >
@@ -790,7 +791,7 @@ function StepThanks({ state, dispatch }) {
             onClick={() =>
               dispatch({
                 type: MERGE,
-                state: { step: STEP_HELLO },
+                state: { ...initialState },
               })
             }
           >
