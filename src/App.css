@@ -155,7 +155,7 @@ img {
 
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
 }
 
@@ -194,6 +194,12 @@ img {
 
 .button--active {
   background: orange;
+}
+
+.button--continue {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
 }
 
 .photo {

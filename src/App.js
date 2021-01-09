@@ -25,7 +25,7 @@ const initialState = {
   step: STEP_HELLO,
   selectedPhoto: null,
   amount: 1,
-  quality: "Normale Qualität",
+  quality: "Standard",
   format: "A6",
   columns: 3,
 };
@@ -52,8 +52,16 @@ const reducer = (state, action) => {
 };
 
 let _overwritten;
-// _overwritten = {"mode":"multiple","step":"40_settings","selectedPhoto":[100,101,102],"amount":1,"quality":"Normale Qualität","format":"A6","columns":3}
-// _overwritten = {"mode":"single","step":"40_settings","selectedPhoto":100,"amount":5,"quality":"Normale Qualität","format":"A6","columns":3}
+// _overwritten = {"mode":"multiple","step":"40_settings","selectedPhoto":[100,101,102],"amount":1,"quality":"Standard","format":"A6","columns":3}
+_overwritten = {
+  mode: "single",
+  step: "40_settings",
+  selectedPhoto: 100,
+  amount: 5,
+  quality: "Standard",
+  format: "A6",
+  columns: 3,
+};
 
 export default function App() {
   const [state, dispatch] = useReducer(
@@ -338,7 +346,7 @@ function PhotosMultiple({ state, dispatch }) {
         ))}
       </div>
       <button
-        className="button"
+        className="button button--continue"
         disabled={!state.selectedPhoto.length}
         onClick={() =>
           dispatch({ type: MERGE, state: { step: STEP_SETTINGS } })
@@ -351,8 +359,14 @@ function PhotosMultiple({ state, dispatch }) {
 }
 
 function StepSettings({ state, dispatch }) {
-  const formats = ["A2", "A3", "A4", "A5", "A6"];
-  const qualities = ["Normale Qualität", "Profiqualität"];
+  const formats = [
+    ["A6", "10,5 cm x 14,8 cm"],
+    ["A5", "14,8 cm x 21,0 cm"],
+    ["A4", "21,0 cm x 29,7 cm"],
+    ["A3", "29,7 cm x 42,0 cm"],
+    ["A2", "42,0 cm x 59,4 cm"],
+  ];
+  const qualities = ["Standard", "Profi"];
 
   const isSingle = state.mode === MODE_SINGLE;
   const isMultiple = state.mode === MODE_MULTIPLE;
@@ -360,7 +374,7 @@ function StepSettings({ state, dispatch }) {
   return (
     <div className="step step--settings">
       <div className="step__header">
-        <h1>Druckeinstellungen</h1>
+        <h1>Bitte wähle aus folgenden Optionen</h1>
       </div>
       <div className="step__content">
         {isSingle ? (
@@ -369,75 +383,101 @@ function StepSettings({ state, dispatch }) {
           </div>
         ) : null}
         <div className="settings-table">
-          <label htmlFor="settings-format">Format</label>
-          <div className="buttons buttons--small">
-            {formats.map((format) => (
-              <button
-                className={`button ${
-                  format === state.format ? "button--active" : ""
-                }`}
-                onClick={() => dispatch({ type: MERGE, state: { format } })}
-              >
-                {format}
-              </button>
-            ))}
-          </div>
-
-          <label htmlFor="settings-quality">Quality</label>
-          <div className="buttons buttons--small">
-            {qualities.map((f) => (
-              <button
-                className={`button ${
-                  f === state.quality ? "button--active" : ""
-                }`}
-                onClick={() => dispatch({ type: MERGE, state: { quality: f } })}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-
-          {isSingle ? (
-            <>
-              <label htmlFor="settings-amount">Menge</label>
-              <button
-                className="button"
-                onClick={() =>
-                  dispatch({
-                    type: MERGE,
-                    state: { amount: Math.max(1, state.amount - 1) },
-                  })
-                }
-              >
-                -
-              </button>
-              <input type="text" disabled value={state.amount} />
-              <button
-                className="button"
-                onClick={() =>
-                  dispatch({
-                    type: MERGE,
-                    state: { amount: Math.min(99, state.amount + 1) },
-                  })
-                }
-              >
-                +
-              </button>
-              <button
-                className="button"
-                onClick={() =>
-                  dispatch({
-                    type: MERGE,
-                    state: { amount: Math.min(99, state.amount + 10) },
-                  })
-                }
-              >
-                +10
-              </button>
-            </>
-          ) : null}
-
-          <hr />
+          <table>
+            <tr>
+              <th>Format</th>
+              <td>
+                <div className="buttons formats">
+                  {formats.map(([format, size]) => (
+                    <div className="formats__format">
+                      <span>{size}</span>
+                      <button
+                        className={`button ${
+                          format === state.format ? "button--active" : ""
+                        }`}
+                        onClick={() =>
+                          dispatch({ type: MERGE, state: { format } })
+                        }
+                      >
+                        {format}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Qualität</th>
+              <td>
+                <div className="buttons">
+                  {qualities.map((f) => (
+                    <button
+                      className={`button ${
+                        f === state.quality ? "button--active" : ""
+                      }`}
+                      onClick={() =>
+                        dispatch({ type: MERGE, state: { quality: f } })
+                      }
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </td>
+            </tr>
+            {isSingle ? (
+              <tr>
+                <th>Menge</th>
+                <td>
+                  <button
+                    className="button"
+                    onClick={() =>
+                      dispatch({
+                        type: MERGE,
+                        state: { amount: Math.max(1, state.amount - 10) },
+                      })
+                    }
+                  >
+                    -10
+                  </button>
+                  <button
+                    className="button"
+                    onClick={() =>
+                      dispatch({
+                        type: MERGE,
+                        state: { amount: Math.max(1, state.amount - 1) },
+                      })
+                    }
+                  >
+                    -
+                  </button>
+                  <input type="text" disabled value={state.amount} />
+                  <button
+                    className="button"
+                    onClick={() =>
+                      dispatch({
+                        type: MERGE,
+                        state: { amount: Math.min(99, state.amount + 1) },
+                      })
+                    }
+                  >
+                    +
+                  </button>
+                  <button
+                    className="button"
+                    onClick={() =>
+                      dispatch({
+                        type: MERGE,
+                        state: { amount: Math.min(99, state.amount + 10) },
+                      })
+                    }
+                  >
+                    +10
+                  </button>
+                </td>
+              </tr>
+            ) : null}
+          </table>
         </div>
         {isMultiple ? (
           <div className="photos" style={{ "--columns": 3 }}>
@@ -449,7 +489,7 @@ function StepSettings({ state, dispatch }) {
           </div>
         ) : null}
         <button
-          className="button"
+          className="button button--continue"
           onClick={() =>
             dispatch({
               type: MERGE,
