@@ -266,7 +266,7 @@ function StepUpload({ dispatch }) {
               dispatch({ type: MERGE, state: { step: STEP_MODE } })
             }
           >
-            USB Stick ist eingesteckt
+            USB Stick einstecken
           </button>
         </Hardware>
       </div>
@@ -705,11 +705,11 @@ function StepPayment({ state, dispatch }) {
               dispatch({ type: MERGE, state: { step: STEP_PRINT } })
             }
           >
-            Karte ist entfernt
+            Karte entfernen
           </button>
         ) : (
           <button className="button" onClick={() => setPaid(true)}>
-            Betrag ist bezahlt
+            Betrag bezahlen
           </button>
         )}
       </Hardware>
@@ -794,7 +794,7 @@ function StepThanks({ state, dispatch }) {
               })
             }
           >
-            USB Stick ist entfernt
+            USB Stick entfernen
           </button>
         </Hardware>
       </div>
