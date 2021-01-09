@@ -293,7 +293,10 @@ progress {
   }
 }
 
-.step--warning {
+.warning {
+  border: 1px solid rgb(255, 228, 179);
+  padding: 2rem;
+  margin-bottom: 1rem;
   animation: warning 1.5s infinite;
 }
 

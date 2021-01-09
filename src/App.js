@@ -257,6 +257,7 @@ function StepUpload({ dispatch }) {
           Schliessen Sie Ihr Speichermedium an einem der dafür vorgesehenen
           Steckplätze an, um die Bilder zu laden.
         </p>
+        <img src={require("./ports.png").default} alt="" />
         <Hardware>
           <button
             className="button"
@@ -647,30 +648,53 @@ function StepSettings({ state, dispatch }) {
 }
 
 function StepPayment({ state, dispatch }) {
+  const [paid, setPaid] = useState(false);
+
   return (
-    <div className="step step--payment">
-      <div className="step__content">
-        <h1>Bezahlung</h1>
-        <p>
-          Format: {state.format}
-          <br />
-          Qualität: {state.proQuality ? "Profi" : "Standard"}
-          <br />
-          Seitenanzahl: {prints(state)}
-        </p>
-        <p>Zu bezahlen: CHF {price(state).toFixed(2)}</p>
-        <Hardware>
+    <>
+      <div className="step step--payment">
+        <div className="step__content">
+          {paid ? (
+            <center>
+              <i className="material-icons" style={{ fontSize: "6rem" }}>
+                info
+              </i>
+              <h2>
+                Bitte entfernen Sie die Maestro-Karte um den Druck zu starten.
+              </h2>
+            </center>
+          ) : (
+            <>
+              <h1>Bezahlung</h1>
+              <p>
+                Format: {state.format}
+                <br />
+                Qualität: {state.proQuality ? "Profi" : "Standard"}
+                <br />
+                Seitenanzahl: {prints(state)}
+              </p>
+              <p>Zu bezahlen: CHF {price(state).toFixed(2)}</p>
+            </>
+          )}
+        </div>
+      </div>
+      <Hardware>
+        {paid ? (
           <button
             className="button"
             onClick={() =>
               dispatch({ type: MERGE, state: { step: STEP_PRINT } })
             }
           >
+            Karte ist entfernt
+          </button>
+        ) : (
+          <button className="button" onClick={() => setPaid(true)}>
             Betrag ist bezahlt
           </button>
-        </Hardware>
-      </div>
-    </div>
+        )}
+      </Hardware>
+    </>
   );
 }
 
@@ -711,18 +735,24 @@ function StepPrint({ state, dispatch }) {
 
 function StepThanks({ state, dispatch }) {
   return (
-    <div className="step step--thanks step--warning">
+    <div className="step step--thanks">
       <div className="step__content">
-        <h1>Vergessen Sie nicht, Ihren USB Stick zu entfernen!</h1>
-        <ul>
-          <li>Bitte entnehmen Sie die gedruckten Photos</li>
-          <li>Vergessen Sie nicht, die Speicherkarte zu entfernen</li>
-        </ul>
+        <h1>Ihre Fotos wurden gedruckt</h1>
 
-        <h2>
+        <div className="warning">
+          <i className="material-icons" style={{ fontSize: "6rem" }}>
+            info
+          </i>
+          <p>
+            Bitte vergessen Sie nicht, Ihren USB Stick zu entfernen und Ihre
+            Fotos zu entnehmen.
+          </p>
+        </div>
+
+        <p>
           Alternativ können Sie vom gleichen Speichermedium einen neuen Auftrag
           starten
-        </h2>
+        </p>
         <button
           className="button"
           onClick={() =>
