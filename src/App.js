@@ -707,9 +707,7 @@ function StepPayment({ state, dispatch }) {
             Karte entfernen
           </button>
         ) : (
-          <button className="button" onClick={() => setPaid(true)}>
-            Betrag bezahlen
-          </button>
+          <button onClick={() => setPaid(true)}>Betrag bezahlen</button>
         )}
       </Hardware>
     </>

@@ -321,6 +321,7 @@ table td {
   border: 1px solid #333;
   border-radius: 8px;
   text-align: center;
+  color: inherit;
 }
 
 progress {
@@ -333,15 +334,15 @@ progress {
 
 @keyframes warning {
   0% {
-    background: #fff;
+    background: #000;
   }
 
   50% {
-    background: rgb(255, 228, 179);
+    background: #825401;
   }
 
   100% {
-    background: #fff;
+    background: #000;
   }
 }
 
