@@ -261,7 +261,6 @@ function StepUpload({ dispatch }) {
         <img src={require("./ports.png").default} alt="" />
         <Hardware>
           <button
-            className="button"
             onClick={() =>
               dispatch({ type: MERGE, state: { step: STEP_MODE } })
             }
@@ -701,7 +700,6 @@ function StepPayment({ state, dispatch }) {
       <Hardware>
         {paid ? (
           <button
-            className="button"
             onClick={() =>
               dispatch({ type: MERGE, state: { step: STEP_PRINT } })
             }
@@ -787,7 +785,6 @@ function StepThanks({ state, dispatch }) {
 
         <Hardware>
           <button
-            className="button"
             onClick={() =>
               dispatch({
                 type: MERGE,
