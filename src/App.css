@@ -32,6 +32,28 @@
 
   background: #000;
   color: #eee;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.App h1,
+.App h2,
+.App h3,
+.App h4 {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 300;
+}
+
+.App h1 {
+  font-size: 36px;
+}
+
+.App h2 {
+  font-size: 30px;
+}
+
+.App h3 {
+  font-size: 26px;
 }
 
 .App--has-nav {
